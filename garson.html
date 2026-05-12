@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>SmartPOS — Garson / POS</title>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SmartPOS — Garson/POS</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--blue:#38bdf8;
-  --bg:#0a0a0f;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);
-  --border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
+:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--blue:#38bdf8;--bg:#0a0a0f;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .syne{font-family:'Syne',sans-serif;}
-/* NAV */
-.nav{background:rgba(10,10,15,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.nav-left{display:flex;align-items:center;gap:10px;}
-.logo-ic{width:32px;height:32px;border-radius:9px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;}
-.nav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
-.nav-right{display:flex;align-items:center;gap:8px;}
-/* BUTTONS */
+.nav{background:rgba(10,10,15,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:1px solid transparent;transition:all .22s;text-decoration:none;}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1000;}
 .btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,192,96,0.3);}
@@ -28,244 +19,171 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-green{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.3);color:#4ade80;}
 .btn-green:hover{background:rgba(34,197,94,0.22);}
 .btn-red{background:rgba(255,75,75,0.12);border-color:rgba(255,75,75,0.3);color:#ff8080;}
-.btn-red:hover{background:rgba(255,75,75,0.22);}
 .btn-blue{background:rgba(56,189,248,0.12);border-color:rgba(56,189,248,0.3);color:#7dd3fc;}
-.btn-blue:hover{background:rgba(56,189,248,0.22);}
 .btn-sm{padding:5px 10px;font-size:11px;}
 .btn-xs{padding:3px 7px;font-size:10px;border-radius:6px;}
-/* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .b-gold{background:rgba(240,192,96,0.12);color:var(--gold);border:1px solid rgba(240,192,96,0.22);}
 .b-red{background:rgba(255,75,75,0.12);color:#ff8080;border:1px solid rgba(255,75,75,0.22);}
 .b-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.22);}
 .b-blue{background:rgba(56,189,248,0.12);color:#7dd3fc;border:1px solid rgba(56,189,248,0.22);}
-.b-purple{background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.22);}
-/* CARD */
-.card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;}
-/* INP */
 .inp{background:var(--glass);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;width:100%;outline:none;transition:all .2s;}
 .inp:focus{border-color:rgba(240,192,96,0.4);background:var(--glass2);}
 .inp::placeholder{color:var(--muted);}
-/* LAYOUT */
-.main-layout{display:grid;grid-template-columns:1fr 380px;gap:0;min-height:calc(100vh - 57px);}
+.main-layout{display:grid;grid-template-columns:1fr 380px;min-height:calc(100vh - 57px);}
 @media(max-width:900px){.main-layout{grid-template-columns:1fr;}.pos-panel{border-left:none;border-top:1px solid var(--border);}}
-/* TABLE MAP */
 .map-section{padding:16px 18px;}
-.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .table-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
 @media(max-width:600px){.table-grid{grid-template-columns:repeat(3,1fr);}}
-/* TABLE DOT */
 .table-dot{border-radius:14px;border:2px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;position:relative;padding:10px 4px;gap:3px;min-height:72px;}
 .td-free{background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.25);color:#4ade80;}
 .td-occupied{background:rgba(240,192,96,0.07);border-color:rgba(240,192,96,0.25);color:var(--gold);}
 .td-reserved{background:rgba(255,75,75,0.06);border-color:rgba(255,75,75,0.25);color:#ff8080;}
 .td-selected{background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.5);color:#7dd3fc;transform:scale(1.07);}
-.td-move-source{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.5);color:#c4b5fd;}
-.td-move-target{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.5);color:#4ade80;animation:tdPulse .9s ease-in-out infinite;}
+.td-move-src{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.5);color:#c4b5fd;}
 @keyframes tdPulse{0%,100%{box-shadow:0 0 0 rgba(34,197,94,0);}50%{box-shadow:0 0 14px rgba(34,197,94,0.3);}}
+.td-move-tgt{border-color:rgba(34,197,94,0.5);animation:tdPulse .9s ease-in-out infinite;}
 .td-bell{position:absolute;top:-5px;right:-5px;font-size:10px;color:#ff8080;}
-/* POS PANEL */
-.pos-panel{border-left:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:12px;background:rgba(0,0,0,0.2);}
-.pos-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);gap:10px;text-align:center;}
-/* MODAL */
+.pos-panel{border-left:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:12px;background:rgba(0,0,0,0.2);overflow-y:auto;max-height:calc(100vh - 57px);}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal-box{background:#111120;border:1px solid var(--border);border-radius:20px;width:92%;max-width:520px;max-height:88vh;overflow-y:auto;transform:scale(0.96) translateY(12px);transition:all .3s cubic-bezier(.22,1,.36,1);}
+.modal-box{background:#111120;border:1px solid var(--border);border-radius:20px;width:92%;max-width:520px;max-height:88vh;overflow-y:auto;transform:scale(0.96) translateY(12px);transition:all .3s;}
 .modal-overlay.open .modal-box{transform:scale(1) translateY(0);}
-/* SPLIT */
 .split-seat{background:var(--glass);border:1px solid var(--border);border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
-/* PROG */
-.prog-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s;}
-/* LEGEND */
-.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
-.lg-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px;}
-/* SCROLL */
-::-webkit-scrollbar{width:3px;height:3px;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
 @keyframes toastIn{from{transform:translateX(120px);opacity:0;}to{transform:translateX(0);opacity:1;}}
 </style>
 </head>
 <body>
 <div id="toast-zone"></div>
-
-<!-- NAV -->
 <nav class="nav">
-  <div class="nav-left">
-    <div class="logo-ic">🍽️</div>
-    <div class="nav-title">Garson / POS</div>
-    <span class="badge b-green" id="move-badge" style="display:none;"><i class="fas fa-arrows-alt"></i> Taşıma Modu</span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:32px;height:32px;border-radius:9px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;">🍽️</div>
+    <div class="syne" style="font-weight:800;font-size:15px;">Garson / POS</div>
+    <span class="badge b-green" id="move-badge" style="display:none;"><i class="fas fa-arrows-alt"></i> Taşıma</span>
   </div>
-  <div class="nav-right">
+  <div style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:11px;color:var(--muted);" id="live-clock"></span>
-    <button class="btn btn-blue btn-sm" onclick="toggleMoveMode()"><i class="fas fa-arrows-alt"></i> <span id="move-btn-label">Masa Taşı</span></button>
+    <button class="btn btn-blue btn-sm" onclick="toggleMoveMode()"><i class="fas fa-arrows-alt"></i> <span id="move-label">Masa Taşı</span></button>
     <a href="admin.html" class="btn btn-ghost btn-sm"><i class="fas fa-cog"></i></a>
     <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i></a>
   </div>
 </nav>
-
-<!-- WAITER CALLS -->
-<div id="waiter-calls" style="display:none;"></div>
-
+<div id="waiter-calls-bar" style="display:none;"></div>
 <div class="main-layout">
-  <!-- LEFT: MAP -->
   <div class="map-section">
-    <div class="section-title">
-      <i class="fas fa-map" style="color:var(--gold);"></i> Masa Haritası
-      <span id="table-summary" style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:400;"></span>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="syne" style="font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px;"><i class="fas fa-map" style="color:var(--gold);"></i> Masa Haritası</div>
+      <span id="table-summary" style="font-size:11px;color:var(--muted);"></span>
     </div>
-
-    <div class="legend">
-      <span style="font-size:11px;color:#4ade80;"><span class="lg-dot" style="background:#4ade80;"></span>Boş</span>
-      <span style="font-size:11px;color:var(--gold);"><span class="lg-dot" style="background:var(--gold);"></span>Dolu</span>
-      <span style="font-size:11px;color:#ff8080;"><span class="lg-dot" style="background:#ff8080;"></span>Rezerve</span>
-      <span style="font-size:11px;color:#7dd3fc;"><span class="lg-dot" style="background:#7dd3fc;"></span>Seçili</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-size:11px;color:#4ade80;">🟢 Boş</span>
+      <span style="font-size:11px;color:var(--gold);">🟡 Dolu</span>
+      <span style="font-size:11px;color:#ff8080;">🔴 Rezerve</span>
     </div>
-
     <div class="table-grid" id="table-grid"></div>
-
-    <!-- Move mode info -->
     <div id="move-info" style="display:none;padding:12px;border-radius:11px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);font-size:12px;color:#c4b5fd;margin-top:4px;">
-      <i class="fas fa-info-circle"></i>
-      <span id="move-info-text">Taşımak istediğiniz masayı seçin.</span>
+      <i class="fas fa-info-circle"></i> <span id="move-info-text">Taşımak istediğiniz masayı seçin.</span>
       <button class="btn btn-ghost btn-sm" style="margin-left:8px;" onclick="cancelMove()"><i class="fas fa-times"></i> İptal</button>
     </div>
   </div>
-
-  <!-- RIGHT: POS -->
   <div class="pos-panel" id="pos-panel">
-    <div class="pos-empty">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);gap:10px;text-align:center;">
       <i class="fas fa-hand-pointer" style="font-size:36px;"></i>
       <div class="syne" style="font-weight:700;">Masa Seçin</div>
-      <div style="font-size:12px;">Haritadan bir masa seçerek POS panelini açın.</div>
+      <div style="font-size:12px;">Haritadan bir masa seçin</div>
     </div>
   </div>
 </div>
-
-<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-box" id="modal-box"></div>
 </div>
-
 <script src="shared.js"></script>
 <script>
 let selectedTable = null;
 let moveMode = false;
 let moveFrom = null;
+let allTables = [];
 
-function init() {
-  startClock();
-  renderMap();
-  setInterval(()=>{ renderMap(); if(selectedTable) renderPOS(); }, 3000);
-  window.addEventListener('storage', e=>{
-    if(e.key!==DB.KEY) return;
-    renderMap();
-    if(selectedTable) renderPOS();
-  });
-}
+window.addEventListener('DOMContentLoaded', async () => {
+  showLoading('Garson paneli başlatılıyor...');
+  try {
+    await FDB.init();
+    hideLoading();
+    startClock();
+    FDB.watchTables(tables => {
+      allTables = tables;
+      renderMap(tables);
+      if(selectedTable) renderPOS();
+    });
+  } catch(e) {
+    hideLoading();
+    toast('Bağlantı hatası: ' + e.message, 'critical');
+  }
+});
 
-/* ─── MOVE MODE ─── */
 function toggleMoveMode() {
-  moveMode = !moveMode;
-  moveFrom = null;
-  document.getElementById('move-badge').style.display = moveMode ? 'inline-flex' : 'none';
-  document.getElementById('move-btn-label').textContent = moveMode ? 'Modu Kapat' : 'Masa Taşı';
-  document.getElementById('move-info').style.display = moveMode ? 'block' : 'none';
-  document.getElementById('move-info-text').textContent = 'Taşımak istediğiniz masayı seçin.';
-  renderMap();
-  if(!moveMode) selectedTable = null;
+  moveMode=!moveMode; moveFrom=null;
+  document.getElementById('move-badge').style.display=moveMode?'inline-flex':'none';
+  document.getElementById('move-label').textContent=moveMode?'Modu Kapat':'Masa Taşı';
+  document.getElementById('move-info').style.display=moveMode?'block':'none';
+  if(!moveMode) selectedTable=null;
+  renderMap(allTables);
 }
-function cancelMove() { moveMode=false; moveFrom=null; toggleMoveMode(); }
+function cancelMove(){ moveMode=false; moveFrom=null; toggleMoveMode(); }
 
-/* ─── MAP ─── */
-function renderMap() {
-  const state = DB.get();
-  const waiterCalls = state.tables.filter(t=>t.waiter_call);
-  // Waiter calls bar
-  const wc = document.getElementById('waiter-calls');
+function renderMap(tables) {
+  const waiterCalls = tables.filter(t=>t.waiter_call);
+  const wcBar = document.getElementById('waiter-calls-bar');
   if(waiterCalls.length) {
-    wc.style.display='flex';
-    wc.style.cssText='display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid rgba(255,75,75,0.18);background:rgba(255,75,75,0.04);';
-    wc.innerHTML=`<i class="fas fa-bell fa-beat" style="color:#ff8080;font-size:13px;"></i>
+    wcBar.style.display='flex'; wcBar.style.cssText='display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid rgba(255,75,75,0.18);background:rgba(255,75,75,0.04);';
+    wcBar.innerHTML=`<i class="fas fa-bell fa-beat" style="color:#ff8080;font-size:13px;"></i>
     <span class="syne" style="color:#ff8080;font-weight:700;font-size:12px;">Garson Çağrıları:</span>
     ${waiterCalls.map(t=>`<div style="display:flex;align-items:center;gap:5px;background:rgba(255,75,75,0.08);border:1px solid rgba(255,75,75,0.2);border-radius:7px;padding:4px 9px;">
       <span class="syne" style="font-weight:800;font-size:11px;color:#ff8080;">M${t.id}</span>
       <button class="btn btn-green btn-xs" onclick="clearWaiterCall(${t.id})">✓ Gidildi</button>
     </div>`).join('')}`;
-  } else { wc.style.display='none'; }
-  // Summary
-  const occ = state.tables.filter(t=>t.status==='occupied').length;
-  document.getElementById('table-summary').textContent = `${occ}/${state.tables.length} dolu`;
-  // Grid
-  const grid = document.getElementById('table-grid');
-  grid.innerHTML = state.tables.map(t=>{
+  } else { wcBar.style.display='none'; }
+
+  const occ=tables.filter(t=>t.status==='occupied').length;
+  document.getElementById('table-summary').textContent=`${occ}/${tables.length} dolu`;
+
+  document.getElementById('table-grid').innerHTML=tables.map(t=>{
     let cls='td-free';
-    if(t.status==='occupied') cls='td-occupied';
-    if(t.status==='reserved') cls='td-reserved';
-    if(selectedTable===t.id && !moveMode) cls='td-selected';
-    if(moveMode && moveFrom===t.id) cls='td-move-source';
-    if(moveMode && moveFrom && moveFrom!==t.id) cls='td-move-target';
-    const emoji = t.status==='free'?'🟢':t.status==='reserved'?'🔴':'🟡';
-    const total = tableTotal(t);
-    const orderCnt = (t.orders||[]).reduce((s,o)=>s+o.qty,0);
-    return `<div class="table-dot ${cls}" onclick="selectTable(${t.id})">
+    if(t.status==='occupied')cls='td-occupied';
+    if(t.status==='reserved')cls='td-reserved';
+    if(!moveMode&&selectedTable===t.id)cls='td-selected';
+    if(moveMode&&moveFrom===t.id)cls='td-move-src';
+    if(moveMode&&moveFrom&&moveFrom!==t.id)cls+=' td-move-tgt';
+    const emoji=t.status==='free'?'🟢':t.status==='reserved'?'🔴':'🟡';
+    const tot=tableTotal(t);
+    const oc=Object.values(t.orders||{}).reduce((s,o)=>s+o.qty,0);
+    return`<div class="table-dot ${cls}" onclick="selectTable(${t.id})">
       ${t.waiter_call?'<i class="fas fa-bell fa-beat td-bell"></i>':''}
       <span style="font-size:16px;">${emoji}</span>
       <span style="font-size:13px;">M${t.id}</span>
       <span style="font-size:9px;opacity:.65;">${t.seats}kişi</span>
-      ${orderCnt>0?`<span style="font-size:9px;color:var(--gold);">${total}₺</span>`:''}
+      ${oc>0?`<span style="font-size:9px;color:var(--gold);">${tot}₺</span>`:''}
     </div>`;
   }).join('');
 }
 
 function selectTable(id) {
   if(moveMode) {
-    if(!moveFrom) {
-      moveFrom=id;
-      document.getElementById('move-info-text').textContent=`Masa ${id} seçildi. Şimdi hedef masayı seçin. (Birleştirme veya yer değiştirme)`;
-      renderMap(); return;
-    }
-    if(moveFrom===id){ toast('Aynı masa seçildi, iptal edildi.','warn'); moveFrom=null; renderMap(); return; }
-    openModal('merge-confirm', moveFrom, id);
-    return;
+    if(!moveFrom){ moveFrom=id; document.getElementById('move-info-text').textContent=`Masa ${id} seçildi. Hedef masayı seçin.`; renderMap(allTables); return; }
+    if(moveFrom===id){ toast('Aynı masa!','warn'); moveFrom=null; renderMap(allTables); return; }
+    openModal('merge-confirm',moveFrom,id); return;
   }
-  selectedTable = id;
-  renderMap();
-  renderPOS();
+  selectedTable=id; renderMap(allTables); renderPOS();
 }
 
-function mergeTables(fromId, toId) {
-  DB.update(state=>{
-    const from=state.tables.find(t=>t.id===fromId);
-    const to=state.tables.find(t=>t.id===toId);
-    if(!from||!to) return;
-    (from.orders||[]).forEach(o=>{
-      const ex=(to.orders||[]).find(x=>x.id===o.id);
-      if(ex) ex.qty+=o.qty; else (to.orders=to.orders||[],to.orders.push({...o}));
-    });
-    from.orders=[];from.status='free';from.order_time=null;
-    if(!to.order_time&&(to.orders||[]).length) to.order_time=new Date().toISOString();
-    to.status='occupied'; to.merged_with=fromId;
-  });
-  closeModal();
-  toast(`✅ Masa ${fromId} → Masa ${toId} birleştirildi/taşındı`,'success');
-  moveMode=false; moveFrom=null;
-  document.getElementById('move-badge').style.display='none';
-  document.getElementById('move-btn-label').textContent='Masa Taşı';
-  document.getElementById('move-info').style.display='none';
-  selectedTable=toId;
-  renderMap(); renderPOS();
-}
-
-/* ─── POS ─── */
 function renderPOS() {
-  const panel = document.getElementById('pos-panel');
-  const state = DB.get();
-  const table = state.tables.find(t=>t.id===selectedTable);
-  if(!table){ panel.innerHTML=`<div class="pos-empty"><i class="fas fa-hand-pointer" style="font-size:36px;"></i><div class="syne" style="font-weight:700;">Masa Seçin</div></div>`; return; }
-  const total = tableTotal(table);
-  const orders = table.orders||[];
-  const elapsed = table.order_time ? Math.floor((Date.now()-new Date(table.order_time).getTime())/60000) : 0;
+  const panel=document.getElementById('pos-panel');
+  const table=allTables.find(t=>t.id===selectedTable);
+  if(!table){ panel.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);gap:10px;"><i class="fas fa-hand-pointer" style="font-size:36px;"></i><div class="syne" style="font-weight:700;">Masa Seçin</div></div>`; return; }
+  const orders=Object.values(table.orders||{});
+  const total=tableTotal(table);
+  const elapsed=table.order_time?Math.floor((Date.now()-table.order_time)/60000):0;
   panel.innerHTML=`
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
     <div>
@@ -277,237 +195,177 @@ function renderPOS() {
       ${table.waiter_call?`<span class="badge b-red"><i class="fas fa-bell fa-beat"></i> Çağrı</span>`:''}
     </div>
   </div>
-
-  <!-- Status Buttons -->
   <div style="display:flex;gap:6px;flex-wrap:wrap;">
     <button class="btn btn-ghost btn-sm" onclick="setStatus(${table.id},'free')">🟢 Boş</button>
     <button class="btn btn-ghost btn-sm" onclick="setStatus(${table.id},'reserved')">🔴 Rezerve</button>
     ${table.waiter_call?`<button class="btn btn-red btn-sm" onclick="clearWaiterCall(${table.id})"><i class="fas fa-bell-slash"></i> Çağrıyı Kapat</button>`:''}
   </div>
-
-  <!-- Add Order -->
-  <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="openModal('add-order',${table.id})">
-    <i class="fas fa-plus"></i> Sipariş Ekle
-  </button>
-
-  <!-- Orders List -->
+  <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="openModal('add-order',${table.id})"><i class="fas fa-plus"></i> Sipariş Ekle</button>
   <div style="flex:1;overflow-y:auto;">
-    ${orders.length===0
-      ? `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;"><i class="fas fa-clipboard" style="font-size:28px;display:block;margin-bottom:8px;"></i>Bu masada sipariş yok.</div>`
-      : orders.map(o=>{ const m=menuById(o.id);if(!m)return'';return`
-      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:9px;background:var(--glass);margin-bottom:6px;border:1px solid var(--border);">
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:500;">${m.name}</div>
-          <div style="font-size:10px;color:var(--muted);">${m.prep}dk prep</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;">
-          <button class="btn btn-ghost btn-xs" onclick="changeQty(${table.id},'${o.id}',-1)"><i class="fas fa-minus"></i></button>
-          <span class="syne" style="font-weight:800;min-width:16px;text-align:center;">${o.qty}</span>
-          <button class="btn btn-ghost btn-xs" onclick="changeQty(${table.id},'${o.id}',1)"><i class="fas fa-plus"></i></button>
-        </div>
-        <span class="syne" style="font-weight:800;color:var(--gold);font-size:13px;min-width:46px;text-align:right;">${m.price*o.qty}₺</span>
-        <button onclick="removeItem(${table.id},'${o.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;"><i class="fas fa-trash-alt"></i></button>
-      </div>`;}).join('')}
+    ${orders.length===0?`<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;"><i class="fas fa-clipboard" style="font-size:28px;display:block;margin-bottom:8px;"></i>Sipariş yok.</div>`
+    :orders.map(o=>{const m=menuById(o.id);if(!m)return'';return`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:9px;background:var(--glass);margin-bottom:6px;border:1px solid var(--border);">
+      <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${m.name}</div><div style="font-size:10px;color:var(--muted);">${m.prep}dk</div></div>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <button class="btn btn-ghost btn-xs" onclick="changeQty(${table.id},'${o.id}',-1)"><i class="fas fa-minus"></i></button>
+        <span class="syne" style="font-weight:800;min-width:16px;text-align:center;">${o.qty}</span>
+        <button class="btn btn-ghost btn-xs" onclick="changeQty(${table.id},'${o.id}',1)"><i class="fas fa-plus"></i></button>
+      </div>
+      <span class="syne" style="font-weight:800;color:var(--gold);font-size:13px;min-width:46px;text-align:right;">${m.price*o.qty}₺</span>
+      <button onclick="removeItem(${table.id},'${o.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;"><i class="fas fa-trash-alt"></i></button>
+    </div>`;}).join('')}
   </div>
-
   ${orders.length>0?`
-  <!-- Total -->
   <div style="padding:12px;border-radius:11px;background:rgba(240,192,96,0.06);border:1px solid rgba(240,192,96,0.15);display:flex;justify-content:space-between;align-items:center;">
     <span class="syne" style="font-weight:700;">Toplam</span>
     <span class="syne" style="font-weight:800;font-size:22px;color:var(--gold);">${total}₺</span>
   </div>
-  <!-- Actions -->
   <div style="display:flex;gap:8px;">
-    <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="openModal('split-bill',${table.id})"><i class="fas fa-receipt"></i> Split Bill</button>
+    <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="openModal('split-bill',${table.id})"><i class="fas fa-receipt"></i> Split</button>
     <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="closeTable(${table.id})"><i class="fas fa-check-circle"></i> Hesabı Kapat</button>
   </div>`:''}
-
-  <!-- Note -->
   <textarea class="inp" placeholder="Masa notu..." rows="2" onchange="saveNote(${table.id},this.value)">${table.note||''}</textarea>`;
 }
 
-/* ─── ACTIONS ─── */
-function changeQty(tableId, itemId, delta) {
-  DB.update(s=>{
-    const t=s.tables.find(t=>t.id===tableId); if(!t) return;
-    const o=(t.orders||[]).find(o=>o.id===itemId); if(!o) return;
-    o.qty+=delta;
-    if(o.qty<=0) t.orders=t.orders.filter(x=>x.id!==itemId);
-    if(!(t.orders||[]).length) t.status='free';
+async function changeQty(tableId,itemId,delta) {
+  const table=allTables.find(t=>t.id===tableId);if(!table)return;
+  const o=(table.orders||{})[itemId];if(!o)return;
+  const newQty=o.qty+delta;
+  if(newQty<=0) await FDB.db.ref(`tables/t${tableId}/orders/${itemId}`).remove();
+  else await FDB.db.ref(`tables/t${tableId}/orders/${itemId}/qty`).set(newQty);
+}
+async function removeItem(tableId,itemId) {
+  await FDB.db.ref(`tables/t${tableId}/orders/${itemId}`).remove();
+  const table=allTables.find(t=>t.id===tableId);
+  if(table&&Object.keys(table.orders||{}).length<=1) await FDB.updateTable(tableId,{status:'free',order_time:null});
+}
+async function saveNote(tableId,note){ await FDB.updateTable(tableId,{note}); }
+async function setStatus(tableId,status){ await FDB.updateTable(tableId,{status}); toast(`Masa ${tableId} → ${status==='free'?'Boş':status==='reserved'?'Rezerve':'Dolu'}`,'success'); }
+async function clearWaiterCall(tableId){ await FDB.updateTable(tableId,{waiter_call:false,waiter_call_time:null}); toast(`Masa ${tableId} çağrısı kapatıldı`,'success'); }
+async function closeTable(tableId){
+  await FDB.completeOrder(tableId);
+  toast(`💰 Masa ${tableId} hesabı kapatıldı!`,'success');
+}
+async function mergeTables(fromId,toId){
+  const from=allTables.find(t=>t.id===fromId);
+  const to=allTables.find(t=>t.id===toId);
+  if(!from||!to)return;
+  const updates={};
+  Object.values(from.orders||{}).forEach(o=>{
+    const ex=(to.orders||{})[o.id];
+    if(ex) updates[`tables/t${toId}/orders/${o.id}/qty`]=(ex.qty||0)+o.qty;
+    else updates[`tables/t${toId}/orders/${o.id}`]={...o};
   });
-  renderMap(); renderPOS();
-}
-function removeItem(tableId, itemId) {
-  DB.update(s=>{ const t=s.tables.find(t=>t.id===tableId); if(!t) return; t.orders=(t.orders||[]).filter(o=>o.id!==itemId); if(!t.orders.length){t.status='free';t.order_time=null;} });
-  renderMap(); renderPOS();
-}
-function saveNote(tableId, note) {
-  DB.update(s=>{ const t=s.tables.find(t=>t.id===tableId); if(t)t.note=note; });
-}
-function setStatus(tableId, status) {
-  DB.update(s=>{ const t=s.tables.find(t=>t.id===tableId); if(t)t.status=status; });
-  renderMap(); renderPOS();
-}
-function clearWaiterCall(tableId) {
-  DB.update(s=>{ const t=s.tables.find(t=>t.id===tableId); if(t){t.waiter_call=false;t.waiter_call_time=null;} });
-  toast(`Masa ${tableId} çağrısı kapatıldı`,'success');
-  renderMap(); renderPOS();
-}
-function closeTable(tableId) {
-  DB.update(state=>{
-    const table=state.tables.find(t=>t.id===tableId); if(!table) return;
-    const rev=tableTotal(table);
-    state.zReport.totalRevenue+=rev;
-    state.zReport.orderCount++;
-    (table.orders||[]).forEach(o=>{ state.zReport.topItems[o.id]=(state.zReport.topItems[o.id]||0)+o.qty; });
-    table.orders=[];table.status='free';table.order_time=null;table.note='';table.merged_with=null;
-  });
-  toast(`💰 Masa ${tableId} hesabı kapatıldı ve Z-raporuna eklendi`,'success');
-  renderMap(); renderPOS();
+  updates[`tables/t${fromId}/orders`]={};
+  updates[`tables/t${fromId}/status`]='free';
+  updates[`tables/t${fromId}/order_time`]=null;
+  updates[`tables/t${toId}/status`]='occupied';
+  if(!to.order_time) updates[`tables/t${toId}/order_time`]=Date.now();
+  await FDB.db.ref('/').update(updates);
+  closeModal(); moveMode=false; moveFrom=null;
+  document.getElementById('move-badge').style.display='none';
+  document.getElementById('move-label').textContent='Masa Taşı';
+  document.getElementById('move-info').style.display='none';
+  selectedTable=toId;
+  toast(`✅ Masa ${fromId} → Masa ${toId} birleştirildi`,'success');
 }
 
-/* ─── MODALS ─── */
-function openModal(type, ...args) {
-  const overlay=document.getElementById('modal-overlay');
-  overlay.classList.add('open');
+function openModal(type,...args){
+  document.getElementById('modal-overlay').classList.add('open');
   const box=document.getElementById('modal-box');
-
-  if(type==='add-order') {
+  if(type==='add-order'){
     const tableId=args[0];
-    const state=DB.get();
-    const tableOrders=(state.tables.find(t=>t.id===tableId)||{}).orders||[];
+    const table=allTables.find(t=>t.id===tableId);
+    const tOrders=table?.orders||{};
     box.innerHTML=`<div style="padding:18px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <h2 class="syne" style="font-size:17px;font-weight:800;">Sipariş Ekle — Masa ${tableId}</h2>
+      <h2 class="syne" style="font-size:17px;font-weight:800;">Sipariş Ekle — M${tableId}</h2>
       <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
     </div>
-    <input class="inp" placeholder="🔍 Ürün ara..." style="margin-bottom:12px;" oninput="filterAddOrder(this.value,${tableId})"/>
-    <div id="add-order-list" style="max-height:55vh;overflow-y:auto;">
-      ${MENU.map(m=>{
-        const inT=tableOrders.find(o=>o.id===m.id);
-        return`<div class="ao-item" data-name="${m.name.toLowerCase()}" data-desc="${m.desc.toLowerCase()}" style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;margin-bottom:6px;border:1px solid var(--border);background:var(--glass);">
+    <input class="inp" placeholder="🔍 Ürün ara..." style="margin-bottom:12px;" oninput="filterAO(this.value)"/>
+    <div id="ao-list" style="max-height:55vh;overflow-y:auto;">
+      ${MENU.map(m=>{const inT=tOrders[m.id];return`
+      <div class="ao-row" data-name="${m.name.toLowerCase()}" style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;margin-bottom:6px;border:1px solid var(--border);background:var(--glass);">
         <img src="${m.img}" style="width:44px;height:44px;border-radius:9px;object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=60'"/>
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:500;">${m.name}</div>
-          <div style="font-size:10px;color:var(--muted);">${m.prep}dk · ${m.cal}kcal</div>
-        </div>
-        <span class="syne" style="font-weight:800;color:var(--gold);font-size:13px;">${m.price}₺</span>
+        <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${m.name}</div><div style="font-size:10px;color:var(--muted);">${m.prep}dk · ${m.price}₺</div></div>
         ${inT?`<span class="syne" style="font-size:11px;color:var(--muted);">×${inT.qty}</span>`:''}
-        <button class="btn btn-gold btn-xs" onclick="addItemToTable(${tableId},'${m.id}')"><i class="fas fa-plus"></i> Ekle</button>
-      </div>`; }).join('')}
+        <button class="btn btn-gold btn-xs" onclick="addItemPOS(${tableId},'${m.id}')"><i class="fas fa-plus"></i> Ekle</button>
+      </div>`;}).join('')}
     </div></div>`;
     return;
   }
-
-  if(type==='merge-confirm') {
+  if(type==='merge-confirm'){
     const [fromId,toId]=args;
     box.innerHTML=`<div style="padding:24px;text-align:center;">
     <div style="font-size:52px;margin-bottom:12px;">🔄</div>
-    <h2 class="syne" style="font-size:18px;font-weight:800;margin-bottom:8px;">Masa Birleştir / Taşı</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">Masa <strong style="color:var(--gold);">${fromId}</strong>'in siparişleri Masa <strong style="color:var(--gold);">${toId}</strong>'e taşınacak.<br/>Masa ${fromId} boş olarak işaretlenecek.</p>
+    <h2 class="syne" style="font-size:18px;font-weight:800;margin-bottom:8px;">Masa Birleştir</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">Masa <strong style="color:var(--gold);">${fromId}</strong>'in siparişleri Masa <strong style="color:var(--gold);">${toId}</strong>'e taşınacak.</p>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="closeModal();cancelMove();">İptal</button>
       <button class="btn btn-gold" style="flex:1;justify-content:center;" onclick="mergeTables(${fromId},${toId})"><i class="fas fa-arrows-alt"></i> Birleştir</button>
     </div></div>`;
     return;
   }
-
-  if(type==='split-bill') {
-    const tableId=args[0];
-    renderSplitModal(tableId);
-    return;
+  if(type==='split-bill'){
+    renderSplitModal(args[0]);return;
   }
 }
-
-function filterAddOrder(val, tableId) {
-  const q=val.toLowerCase();
-  document.querySelectorAll('.ao-item').forEach(el=>{
-    const match=el.dataset.name.includes(q)||el.dataset.desc.includes(q);
-    el.style.display=match?'flex':'none';
-  });
+function filterAO(v){const q=v.toLowerCase();document.querySelectorAll('.ao-row').forEach(el=>{el.style.display=el.dataset.name.includes(q)?'flex':'none';});}
+async function addItemPOS(tableId,itemId){
+  const table=allTables.find(t=>t.id===tableId);if(!table)return;
+  const ex=(table.orders||{})[itemId];
+  const updates={};
+  if(ex) updates[`tables/t${tableId}/orders/${itemId}/qty`]=(ex.qty||0)+1;
+  else updates[`tables/t${tableId}/orders/${itemId}`]={id:itemId,qty:1,sentAt:Date.now()};
+  updates[`tables/t${tableId}/status`]='occupied';
+  if(!table.order_time) updates[`tables/t${tableId}/order_time`]=Date.now();
+  await FDB.db.ref('/').update(updates);
+  toast(`✅ ${menuById(itemId)?.name} eklendi`,'success');
 }
-
-function addItemToTable(tableId, itemId) {
-  DB.update(state=>{
-    const table=state.tables.find(t=>t.id===tableId); if(!table) return;
-    table.orders=table.orders||[];
-    const ex=table.orders.find(o=>o.id===itemId);
-    if(ex) ex.qty++; else table.orders.push({id:itemId,qty:1,sentAt:new Date().toISOString()});
-    table.status='occupied';
-    if(!table.order_time) table.order_time=new Date().toISOString();
-  });
-  const m=menuById(itemId);
-  toast(`✅ ${m?.name} — Masa ${tableId}'e eklendi`,'success');
-  // Refresh add-order list in modal
-  const state=DB.get();
-  const tableOrders=(state.tables.find(t=>t.id===tableId)||{}).orders||[];
-  document.querySelectorAll('.ao-item').forEach(el=>{
-    const btn=el.querySelector('button');
-    const itemId2=btn?.getAttribute('onclick')?.match(/'([^']+)'\)/)?.[1];
-    if(!itemId2) return;
-    const inT=tableOrders.find(o=>o.id===itemId2);
-    let span=el.querySelector('.ao-cnt');
-    if(inT){
-      if(!span){span=document.createElement('span');span.className='ao-cnt syne';span.style.cssText='font-size:11px;color:var(--muted);';el.insertBefore(span,btn);}
-      span.textContent=`×${inT.qty}`;
-    }
-  });
-  renderMap(); renderPOS();
-}
-
-function renderSplitModal(tableId) {
-  const state=DB.get();
-  const table=state.tables.find(t=>t.id===tableId);
-  if(!table||(table.orders||[]).length===0){
-    document.getElementById('modal-box').innerHTML=`<div style="padding:24px;text-align:center;color:var(--muted);">Bu masada aktif sipariş yok.<br/><button class="btn btn-ghost" style="margin-top:14px;" onclick="closeModal()">Kapat</button></div>`;
-    return;
-  }
+function renderSplitModal(tableId){
+  const table=allTables.find(t=>t.id===tableId);
+  const box=document.getElementById('modal-box');
+  if(!table||!Object.keys(table.orders||{}).length){box.innerHTML=`<div style="padding:24px;text-align:center;color:var(--muted);">Aktif sipariş yok.<br/><button class="btn btn-ghost" style="margin-top:14px;" onclick="closeModal()">Kapat</button></div>`;return;}
   const total=tableTotal(table);
-  const seats=state.splitSeats||2;
-  const perPerson=Math.ceil(total/seats);
-  document.getElementById('modal-box').innerHTML=`<div style="padding:20px;">
+  const seats=table._splitSeats||2;
+  const pp=Math.ceil(total/seats);
+  box.innerHTML=`<div style="padding:20px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <h2 class="syne" style="font-size:17px;font-weight:800;">💳 Split Bill — Masa ${tableId}</h2>
+    <h2 class="syne" style="font-size:17px;font-weight:800;">💳 Split Bill — M${tableId}</h2>
     <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
   </div>
   <div style="padding:14px;border-radius:12px;background:rgba(240,192,96,0.07);border:1px solid rgba(240,192,96,0.18);text-align:center;margin-bottom:16px;">
-    <div style="font-size:11px;color:var(--muted);">Toplam Tutar</div>
+    <div style="font-size:11px;color:var(--muted);">Toplam</div>
     <div class="syne" style="font-size:32px;font-weight:800;color:var(--gold);">${total}₺</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;justify-content:center;">
-    <span style="font-size:13px;">Kişi Sayısı:</span>
+    <span style="font-size:13px;">Kişi:</span>
     <button class="btn btn-ghost btn-sm" onclick="setSplit(${tableId},${seats-1})"><i class="fas fa-minus"></i></button>
     <span class="syne" style="font-size:24px;font-weight:800;">${seats}</span>
     <button class="btn btn-ghost btn-sm" onclick="setSplit(${tableId},${seats+1})"><i class="fas fa-plus"></i></button>
   </div>
   <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-    ${Array.from({length:seats},(_,i)=>`
-    <div class="split-seat">
+    ${Array.from({length:seats},(_,i)=>`<div class="split-seat">
       <div style="display:flex;align-items:center;gap:8px;">
         <div style="width:28px;height:28px;border-radius:50%;background:rgba(240,192,96,0.12);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:var(--gold);">${i+1}</div>
-        <span style="font-size:13px;">Kişi ${i+1}</span>
+        <span>Kişi ${i+1}</span>
       </div>
-      <span class="syne" style="font-weight:800;font-size:18px;color:var(--gold);">${perPerson}₺</span>
+      <span class="syne" style="font-weight:800;font-size:18px;color:var(--gold);">${pp}₺</span>
     </div>`).join('')}
   </div>
-  <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:14px;">${total}₺ ÷ ${seats} kişi = ${perPerson}₺/kişi</div>
   <div style="display:flex;gap:8px;">
     <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="closeModal()">Vazgeç</button>
     <button class="btn btn-gold" style="flex:1;justify-content:center;" onclick="closeTable(${tableId});closeModal()"><i class="fas fa-check-circle"></i> Ödendi — Kapat</button>
   </div></div>`;
 }
-
-function setSplit(tableId, n) {
-  if(n<1) return;
-  DB.update(s=>{ s.splitSeats=n; });
+async function setSplit(tableId,n){
+  if(n<1)return;
+  // store locally in allTables for UI
+  const t=allTables.find(t=>t.id===tableId);
+  if(t) t._splitSeats=n;
   renderSplitModal(tableId);
 }
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-window.addEventListener('DOMContentLoaded', init);
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 </script>
 </body>
 </html>

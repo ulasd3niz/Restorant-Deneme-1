@@ -1,8 +1,19 @@
 /* ═══════════════════════════════════════════
-   shared.js  —  SmartPOS ortak veri & state
+   shared.js — SmartPOS + Firebase Realtime DB
    ═══════════════════════════════════════════ */
 
-/* ─── MENU ─── */
+/* ─── FIREBASE CONFIG ─── */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBXt0V74a-gb0bEcFyHwGRbP6AueFZsLTU",
+  authDomain: "smartpos-restoran.firebaseapp.com",
+  databaseURL: "https://smartpos-restoran-default-rtdb.firebaseio.com",
+  projectId: "smartpos-restoran",
+  storageBucket: "smartpos-restoran.firebasestorage.app",
+  messagingSenderId: "960092603051",
+  appId: "1:960092603051:web:0893e8375ee6cb7c40adee"
+};
+
+/* ─── MENU DATA ─── */
 const MENU = [
   {id:'m01',name:'Truffle Smash Burger',cat:'burger',price:185,cal:820,prep:12,vegan:false,gluten:true,dairy:true,nuts:false,hot:true,
    img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80',
@@ -45,151 +56,326 @@ const MENU = [
    desc:'Taze mango püresi, tajin, limon, soda, mint'},
 ];
 
-/* ─── JUKEBOX ─── */
 const JUKEBOX_INIT = [
   {id:'j1',title:'Heat Waves',artist:'Glass Animals',votes:30,dur:'3:59'},
   {id:'j2',title:'Blinding Lights',artist:'The Weeknd',votes:24,dur:'3:20'},
   {id:'j3',title:'Levitating',artist:'Dua Lipa',votes:18,dur:'3:23'},
   {id:'j4',title:'Stay',artist:'The Kid LAROI',votes:15,dur:'2:21'},
   {id:'j5',title:'Shivers',artist:'Ed Sheeran',votes:11,dur:'3:27'},
-  {id:'j6',title:'MONTERO',artist:'Lil Nas X',votes:9,dur:'2:17'},
 ];
 
-/* ─── TABLES INIT ─── */
-const TABLES_INIT = Array.from({length:12},(_,i)=>({
-  id: i+1,
-  status: 'free',          // free | occupied | reserved
-  seats: (i%3===0)?6:4,
-  orders: [],              // [{id,qty,note,sentAt}]  ← mutfağa gönderilmiş
-  pendingOrders: [],       // garson tarafından mutfağa gönderilmeden önce POS'ta bekleyen
-  note: '',
-  waiter_call: false,
-  waiter_call_time: null,
-  order_time: null,
-  merged_with: null,
-}));
+const TABLES_COUNT = 12;
 
-/* ═══ STATE ENGINE ═══ */
-const DB = {
-  KEY: 'smartpos_v2',
+/* ─── FIREBASE ENGINE ─── */
+const FDB = {
+  app: null,
+  db: null,
+  ref: null,
+  get: null,
+  set: null,
+  update: null,
+  onValue: null,
+  push: null,
+  ready: false,
+  listeners: [],
 
-  defaults() {
-    return {
-      tables: JSON.parse(JSON.stringify(TABLES_INIT)),
-      jukebox: JSON.parse(JSON.stringify(JUKEBOX_INIT)),
-      announcements: '🍽️ Bugünün Önerisi: Truffle Smash Burger %20 İndirimli!  ·  🎵 Jukebox aktif — şarkı oylayın!  ·  ☕ Taze filtre kahve geldi',
-      zReport: { totalRevenue:0, orderCount:0, topItems:{}, openedAt: new Date().toISOString() },
-      splitSeats: 2,
-    };
+  async init() {
+    await this._loadSDK();
+    const { initializeApp } = window.firebaseApp;
+    const { getDatabase, ref, get, set, update, onValue, push, serverTimestamp } = window.firebaseDB;
+    this.app = initializeApp(FIREBASE_CONFIG);
+    this.db  = getDatabase(this.app);
+    this.ref = (path) => ref(this.db, path);
+    this.get = get;
+    this.set = set;
+    this.update = update;
+    this.onValue = onValue;
+    this.push = push;
+    this.serverTimestamp = serverTimestamp;
+    this.ready = true;
+    await this._ensureDefaults();
   },
 
-  load() {
-    try {
-      const raw = localStorage.getItem(this.KEY);
-      if (!raw) return this.defaults();
-      return { ...this.defaults(), ...JSON.parse(raw) };
-    } catch(e) { return this.defaults(); }
+  _loadSDK() {
+    return new Promise((resolve) => {
+      if (window.firebaseApp && window.firebaseDB) { resolve(); return; }
+      const s1 = document.createElement('script');
+      s1.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+      s1.onload = () => {
+        const s2 = document.createElement('script');
+        s2.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
+        s2.onload = () => {
+          // compat mode — use window.firebase
+          window.firebaseApp = { initializeApp: (...a) => window.firebase.initializeApp(...a) };
+          window.firebaseDB  = {
+            getDatabase: (app) => app.database(),
+            ref: (db, path) => db.ref(path),
+            get: (ref) => ref.once('value').then(s => s),
+            set: (ref, val) => ref.set(val),
+            update: (ref, val) => ref.update(val),
+            onValue: (ref, cb) => { ref.on('value', cb); return () => ref.off('value', cb); },
+            push: (ref, val) => ref.push(val),
+            serverTimestamp: () => window.firebase.database.ServerValue.TIMESTAMP,
+          };
+          resolve();
+        };
+        document.head.appendChild(s2);
+      };
+      document.head.appendChild(s1);
+    });
   },
 
-  save(state) {
-    localStorage.setItem(this.KEY, JSON.stringify(state));
+  async _ensureDefaults() {
+    // init tables if not exist
+    const snap = await this.db.ref('tables').once('value');
+    if (!snap.exists()) {
+      const tables = {};
+      for (let i = 1; i <= TABLES_COUNT; i++) {
+        tables[`t${i}`] = {
+          id: i, status: 'free', seats: (i % 3 === 0) ? 6 : 4,
+          orders: {}, note: '', waiter_call: false,
+          waiter_call_time: null, order_time: null, merged_with: null,
+        };
+      }
+      await this.db.ref('tables').set(tables);
+    }
+    const jSnap = await this.db.ref('jukebox').once('value');
+    if (!jSnap.exists()) {
+      const jbox = {};
+      JUKEBOX_INIT.forEach(j => { jbox[j.id] = j; });
+      await this.db.ref('jukebox').set(jbox);
+    }
+    const aSnap = await this.db.ref('announcements').once('value');
+    if (!aSnap.exists()) {
+      await this.db.ref('announcements').set('🍽️ Bugünün Önerisi: Truffle Smash Burger %20 İndirimli!  ·  🎵 Jukebox aktif!');
+    }
+    const zSnap = await this.db.ref('zReport').once('value');
+    if (!zSnap.exists()) {
+      await this.db.ref('zReport').set({ totalRevenue: 0, orderCount: 0, topItems: {}, openedAt: Date.now() });
+    }
   },
 
-  get() { return this.load(); },
+  // ── helpers ──
+  async getTable(id) {
+    const s = await this.db.ref(`tables/t${id}`).once('value');
+    return s.val();
+  },
+  async getAllTables() {
+    const s = await this.db.ref('tables').once('value');
+    const val = s.val() || {};
+    return Object.values(val).sort((a,b)=>a.id-b.id);
+  },
+  watchTables(cb) {
+    return this.db.ref('tables').on('value', snap => {
+      const val = snap.val() || {};
+      cb(Object.values(val).sort((a,b)=>a.id-b.id));
+    });
+  },
+  stopWatchTables() { this.db.ref('tables').off(); },
 
-  update(fn) {
-    const state = this.load();
-    fn(state);
-    this.save(state);
-    return state;
+  async updateTable(id, data) {
+    await this.db.ref(`tables/t${id}`).update(data);
+  },
+
+  async addOrder(tableId, items, note) {
+    const now = Date.now();
+    const updates = {};
+    const tableRef = `tables/t${tableId}`;
+    // merge items into orders
+    const snap = await this.db.ref(`${tableRef}/orders`).once('value');
+    const existing = snap.val() || {};
+    items.forEach(item => {
+      if (existing[item.id]) {
+        updates[`${tableRef}/orders/${item.id}/qty`] = (existing[item.id].qty || 0) + item.qty;
+      } else {
+        updates[`${tableRef}/orders/${item.id}`] = { id: item.id, qty: item.qty, note: note || '', sentAt: now };
+      }
+    });
+    updates[`${tableRef}/status`] = 'occupied';
+    updates[`${tableRef}/order_time`] = now;
+    await this.db.ref('/').update(updates);
+  },
+
+  async completeOrder(tableId) {
+    const table = await this.getTable(tableId);
+    if (!table) return;
+    const orders = table.orders || {};
+    let revenue = 0;
+    const topItems = {};
+    Object.values(orders).forEach(o => {
+      const m = menuById(o.id);
+      if (m) { revenue += m.price * o.qty; topItems[o.id] = o.qty; }
+    });
+    // update zReport
+    const zSnap = await this.db.ref('zReport').once('value');
+    const z = zSnap.val() || { totalRevenue: 0, orderCount: 0, topItems: {} };
+    z.totalRevenue = (z.totalRevenue || 0) + revenue;
+    z.orderCount = (z.orderCount || 0) + 1;
+    Object.entries(topItems).forEach(([id, qty]) => {
+      z.topItems[id] = (z.topItems[id] || 0) + qty;
+    });
+    await this.db.ref('zReport').set(z);
+    await this.db.ref(`tables/t${tableId}`).update({
+      orders: {}, status: 'free', order_time: null,
+      note: '', waiter_call: false, waiter_call_time: null,
+    });
+  },
+
+  async getJukebox() {
+    const s = await this.db.ref('jukebox').once('value');
+    const val = s.val() || {};
+    return Object.values(val).sort((a,b) => b.votes - a.votes);
+  },
+  watchJukebox(cb) {
+    this.db.ref('jukebox').on('value', snap => {
+      const val = snap.val() || {};
+      cb(Object.values(val).sort((a,b) => b.votes - a.votes));
+    });
+  },
+  async voteJukebox(id) {
+    const s = await this.db.ref(`jukebox/${id}/votes`).once('value');
+    await this.db.ref(`jukebox/${id}/votes`).set((s.val() || 0) + 1);
+  },
+
+  async getAnnouncements() {
+    const s = await this.db.ref('announcements').once('value');
+    return s.val() || '';
+  },
+  watchAnnouncements(cb) {
+    this.db.ref('announcements').on('value', snap => cb(snap.val() || ''));
+  },
+  async setAnnouncements(text) {
+    await this.db.ref('announcements').set(text);
+  },
+
+  async getZReport() {
+    const s = await this.db.ref('zReport').once('value');
+    return s.val() || { totalRevenue: 0, orderCount: 0, topItems: {}, openedAt: Date.now() };
+  },
+  watchZReport(cb) {
+    this.db.ref('zReport').on('value', snap => cb(snap.val() || {}));
+  },
+  async resetDay() {
+    const updates = {};
+    for (let i = 1; i <= TABLES_COUNT; i++) {
+      updates[`tables/t${i}/orders`] = {};
+      updates[`tables/t${i}/status`] = 'free';
+      updates[`tables/t${i}/order_time`] = null;
+      updates[`tables/t${i}/note`] = '';
+      updates[`tables/t${i}/waiter_call`] = false;
+      updates[`tables/t${i}/waiter_call_time`] = null;
+    }
+    updates['zReport'] = { totalRevenue: 0, orderCount: 0, topItems: {}, openedAt: Date.now() };
+    await this.db.ref('/').update(updates);
   },
 };
 
-/* ═══ HELPERS ═══ */
-function menuById(id) { return MENU.find(m=>m.id===id); }
+/* ─── HELPERS ─── */
+function menuById(id) { return MENU.find(m => m.id === id); }
 
 function tableTotal(table) {
-  return (table.orders||[]).reduce((s,o)=>{
-    const m = menuById(o.id);
-    return s + (m ? m.price * o.qty : 0);
+  const orders = table.orders || {};
+  return Object.values(orders).reduce((s, o) => {
+    const m = menuById(o.id); return s + (m ? m.price * o.qty : 0);
   }, 0);
 }
 
-function calcWaitTime() {
-  const state = DB.get();
-  const active = state.tables.filter(t=>(t.orders||[]).length > 0);
+function calcWaitTime(tables) {
+  const active = tables.filter(t => Object.keys(t.orders || {}).length > 0);
   if (!active.length) return '~8-12';
-  let total=0, cnt=0;
-  active.forEach(t=>t.orders.forEach(o=>{
-    const m=menuById(o.id);
-    if(m){total+=m.prep*o.qty;cnt++;}
+  let total = 0, cnt = 0;
+  active.forEach(t => Object.values(t.orders || {}).forEach(o => {
+    const m = menuById(o.id);
+    if (m) { total += m.prep * o.qty; cnt++; }
   }));
-  const avg = cnt>0 ? Math.round(total/cnt) : 10;
-  return `~${avg}-${avg+3}`;
+  const avg = cnt > 0 ? Math.round(total / cnt) : 10;
+  return `~${avg}-${avg + 3}`;
 }
 
-function top3Ids() {
-  const counts = {};
-  MENU.forEach(m=>{ counts[m.id]=0; });
-  DB.get().tables.forEach(t=>(t.orders||[]).forEach(o=>{
-    counts[o.id]=(counts[o.id]||0)+o.qty;
-  }));
-  return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+function allergenIcons(m) {
+  let s = '';
+  if (m.vegan)  s += '<span title="Vegan">🌿</span>';
+  if (m.gluten) s += '<span title="Glüten">⚠️</span>';
+  if (m.dairy)  s += '<span title="Süt">🥛</span>';
+  if (m.nuts)   s += '<span title="Kuruyemiş">🥜</span>';
+  if (m.hot)    s += '<span title="Acı">🌶️</span>';
+  return s;
 }
 
-function salesCount(itemId) {
-  let c=0;
-  DB.get().tables.forEach(t=>(t.orders||[]).forEach(o=>{if(o.id===itemId)c+=o.qty;}));
-  return c;
-}
-
-/* ═══ TOAST ═══ */
-function toast(msg, type='success') {
+/* ─── TOAST ─── */
+function toast(msg, type = 'success') {
   let zone = document.getElementById('toast-zone');
-  if (!zone) { zone=document.createElement('div'); zone.id='toast-zone'; document.body.appendChild(zone); }
-  zone.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+  if (!zone) {
+    zone = document.createElement('div');
+    zone.id = 'toast-zone';
+    zone.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
+    document.body.appendChild(zone);
+  }
+  const colors = { success: 'rgba(34,197,94,0.35)', warn: 'rgba(255,200,0,0.35)', critical: 'rgba(255,75,75,0.5)' };
+  const bgs    = { success: 'rgba(0,20,8,0.97)', warn: 'rgba(30,25,0,0.97)', critical: 'rgba(30,0,0,0.97)' };
+  const icons  = { success: '✅', warn: '⚠️', critical: '🚨' };
   const el = document.createElement('div');
-  const colors = {success:'rgba(34,197,94,0.35)',warn:'rgba(255,200,0,0.35)',critical:'rgba(255,75,75,0.5)'};
-  const bgs    = {success:'rgba(0,20,8,0.95)',warn:'rgba(30,25,0,0.95)',critical:'rgba(30,0,0,0.95)'};
-  const icons  = {success:'✅',warn:'⚠️',critical:'🚨'};
-  el.style.cssText=`background:${bgs[type]||bgs.success};border:1px solid ${colors[type]||colors.success};border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;backdrop-filter:blur(20px);max-width:340px;animation:toastIn .3s ease;color:#e8e8f0;font-family:'DM Sans',sans-serif;`;
-  el.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span style="flex:1;">${msg}</span><span style="cursor:pointer;color:#666;" onclick="this.parentElement.remove()">✕</span>`;
+  el.style.cssText = `background:${bgs[type]||bgs.success};border:1px solid ${colors[type]||colors.success};border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;backdrop-filter:blur(20px);max-width:340px;pointer-events:all;color:#e8e8f0;font-family:'DM Sans',sans-serif;animation:toastIn .3s ease;`;
+  el.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span style="flex:1;">${msg}</span><span style="cursor:pointer;color:#666;pointer-events:all;" onclick="this.parentElement.remove()">✕</span>`;
   zone.appendChild(el);
-  setTimeout(()=>{el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateX(120px)';setTimeout(()=>el.remove(),320);},4500);
+  setTimeout(() => { el.style.transition = 'all .3s'; el.style.opacity = '0'; el.style.transform = 'translateX(120px)'; setTimeout(() => el.remove(), 320); }, 4500);
 }
 
-/* ═══ BEEP ═══ */
-function playBeep(freq=880, dur=0.5) {
+/* ─── BEEP ─── */
+function playBeep(freq = 880, dur = 0.5) {
   try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
     osc.frequency.value = freq; osc.type = 'sine';
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
-    osc.start(); osc.stop(ctx.currentTime+dur);
-  } catch(e){}
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(); osc.stop(ctx.currentTime + dur);
+  } catch (e) {}
 }
 
-/* ═══ TICKER ═══ */
-function initTicker() {
-  const wrap = document.getElementById('ticker-wrap');
+/* ─── CLOCK ─── */
+function startClock() {
+  const tick = () => { const el = document.getElementById('live-clock'); if (el) el.textContent = new Date().toLocaleTimeString('tr-TR'); };
+  tick(); setInterval(tick, 1000);
+}
+
+/* ─── TICKER ─── */
+async function initTicker() {
+  const wrap  = document.getElementById('ticker-wrap');
   const inner = document.getElementById('ticker-text');
   if (!wrap || !inner) return;
-  const s = DB.get();
-  if (!s.announcements) { wrap.style.display='none'; return; }
-  wrap.style.display='block';
-  const t = s.announcements;
-  inner.innerHTML = `<span>${t}&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;${t}</span>`;
+  const text = await FDB.getAnnouncements();
+  if (!text) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  inner.innerHTML = `<span>${text}&nbsp;&nbsp;·&nbsp;&nbsp;${text}</span>`;
+  FDB.watchAnnouncements(t => {
+    if (!t) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    inner.innerHTML = `<span>${t}&nbsp;&nbsp;·&nbsp;&nbsp;${t}</span>`;
+  });
 }
 
-/* ═══ CLOCK ═══ */
-function startClock() {
-  const tick = () => {
-    const el = document.getElementById('live-clock');
-    if (el) el.textContent = new Date().toLocaleTimeString('tr-TR');
-  };
-  tick();
-  setInterval(tick, 1000);
+/* ─── LOADING SCREEN ─── */
+function showLoading(msg = 'Bağlanıyor...') {
+  const el = document.createElement('div');
+  el.id = 'fb-loading';
+  el.style.cssText = 'position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;gap:16px;';
+  el.innerHTML = `<div style="font-size:40px;">🔥</div>
+    <div style="font-family:\'Syne\',sans-serif;font-size:18px;font-weight:800;color:#f0c060;">SmartPOS</div>
+    <div style="color:#7878a0;font-size:13px;" id="fb-loading-msg">${msg}</div>
+    <div style="width:200px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+      <div style="height:100%;background:#f0c060;border-radius:2px;animation:loadBar 1.5s ease-in-out infinite;" id="fb-bar"></div>
+    </div>
+    <style>@keyframes loadBar{0%{width:0%;margin-left:0;}50%{width:60%;}100%{width:0%;margin-left:100%;}}</style>`;
+  document.body.appendChild(el);
+}
+function hideLoading() {
+  const el = document.getElementById('fb-loading');
+  if (el) { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }
+}
+function setLoadingMsg(msg) {
+  const el = document.getElementById('fb-loading-msg');
+  if (el) el.textContent = msg;
 }

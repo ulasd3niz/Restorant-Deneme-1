@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>SmartPOS — Admin / Z-Raporu</title>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SmartPOS — Admin</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--blue:#38bdf8;
-  --bg:#0a0a0f;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
-  --border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
+:root{--gold:#f0c060;--gold2:#e8a020;--bg:#0a0a0f;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .syne{font-family:'Syne',sans-serif;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(167,139,250,0.06) 0%,transparent 70%);pointer-events:none;}
-/* NAV */
-.nav{background:rgba(10,10,15,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo-ic{width:32px;height:32px;border-radius:9px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;}
-.nav-right{display:flex;align-items:center;gap:8px;}
-/* BUTTON */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(167,139,250,0.06),transparent 70%);pointer-events:none;}
+.nav{background:rgba(10,10,15,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:1px solid transparent;transition:all .22s;text-decoration:none;}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1000;}
 .btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,192,96,0.3);}
@@ -27,68 +20,46 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .btn-red{background:rgba(255,75,75,0.12);border-color:rgba(255,75,75,0.3);color:#ff8080;}
 .btn-red:hover{background:rgba(255,75,75,0.22);}
 .btn-purple{background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:#c4b5fd;}
-.btn-sm{padding:5px 10px;font-size:11px;}
-/* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .b-purple{background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.22);}
-.b-gold{background:rgba(240,192,96,0.12);color:var(--gold);border:1px solid rgba(240,192,96,0.22);}
-.b-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.22);}
-.b-red{background:rgba(255,75,75,0.12);color:#ff8080;border:1px solid rgba(255,75,75,0.22);}
-/* CARD */
 .card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:20px;}
-.card-sm{padding:16px;}
-/* STAT CARD */
 .stat-card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px;}
 .stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;}
 .stat-label{font-size:11px;color:var(--muted);}
-.stat-sub{font-size:10px;color:var(--muted);}
-/* INP */
 .inp{background:var(--glass);border:1px solid var(--border);border-radius:9px;padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;width:100%;outline:none;transition:all .2s;resize:vertical;}
 .inp:focus{border-color:rgba(240,192,96,0.4);background:var(--glass2);}
 .inp::placeholder{color:var(--muted);}
-/* PROG */
-.prog-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-top:6px;}
+.prog-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .6s ease;}
-/* SECTION TITLE */
 .sec-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-/* GRID */
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;}
 @media(min-width:700px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
 .section-grid{display:grid;grid-template-columns:1fr;gap:16px;}
 @media(min-width:800px){.section-grid{grid-template-columns:1fr 1fr;}}
-/* TABLE STATUS */
 .ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 @media(max-width:480px){.ts-grid{grid-template-columns:repeat(3,1fr);}}
 .ts-dot{border-radius:12px;border:1px solid var(--border);padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;}
-/* SELECT */
 select.inp{cursor:pointer;}
-/* SCROLL */
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
 @keyframes toastIn{from{transform:translateX(120px);opacity:0;}to{transform:translateX(0);opacity:1;}}
 </style>
 </head>
 <body>
 <div id="toast-zone"></div>
-
-<!-- NAV -->
 <nav class="nav">
   <div style="display:flex;align-items:center;gap:10px;">
-    <div class="logo-ic">⚙️</div>
+    <div style="width:32px;height:32px;border-radius:9px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;">⚙️</div>
     <span class="syne" style="font-weight:800;font-size:15px;">Admin / Z-Raporu</span>
     <span class="badge b-purple">Admin</span>
   </div>
-  <div class="nav-right">
+  <div style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:11px;color:var(--muted);" id="live-clock"></span>
-    <a href="garson.html" class="btn btn-ghost btn-sm"><i class="fas fa-concierge-bell"></i> POS</a>
-    <a href="mutfak.html" class="btn btn-ghost btn-sm"><i class="fas fa-fire-burner"></i> Mutfak</a>
-    <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i></a>
+    <a href="garson.html" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;"><i class="fas fa-concierge-bell"></i> POS</a>
+    <a href="mutfak.html" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;"><i class="fas fa-fire-burner"></i> Mutfak</a>
+    <a href="index.html" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;"><i class="fas fa-home"></i></a>
   </div>
 </nav>
-
 <div style="max-width:1100px;margin:0 auto;padding:20px 16px;">
-
-  <!-- Z-RAPORU BAŞLIK -->
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
     <div>
       <h1 class="syne" style="font-size:26px;font-weight:800;">Z-Raporu & Yönetim</h1>
@@ -99,160 +70,116 @@ select.inp{cursor:pointer;}
       <button class="btn btn-red" onclick="resetDay()"><i class="fas fa-redo"></i> Günü Sıfırla</button>
     </div>
   </div>
-
-  <!-- STAT CARDS -->
   <div class="stats-grid" id="stats-grid"></div>
-
-  <!-- SECTIONS -->
   <div class="section-grid">
-
-    <!-- LEFT COL -->
     <div style="display:flex;flex-direction:column;gap:16px;">
-
-      <!-- Satış Analizi -->
       <div class="card">
         <div class="sec-title"><i class="fas fa-chart-bar" style="color:var(--gold);"></i> Satış Analizi</div>
         <div id="sales-chart"></div>
       </div>
-
-      <!-- Kategori Dağılımı -->
       <div class="card">
-        <div class="sec-title"><i class="fas fa-pie-chart" style="color:var(--gold);"></i> Kategori Dağılımı</div>
+        <div class="sec-title"><i class="fas fa-chart-pie" style="color:var(--gold);"></i> Kategori Dağılımı</div>
         <div id="category-chart"></div>
       </div>
-
     </div>
-
-    <!-- RIGHT COL -->
     <div style="display:flex;flex-direction:column;gap:16px;">
-
-      <!-- Masa Durumu -->
       <div class="card">
         <div class="sec-title"><i class="fas fa-chair" style="color:var(--gold);"></i> Masa Durumu</div>
         <div class="ts-grid" id="table-status-grid"></div>
       </div>
-
-      <!-- Duyuru Bandı -->
       <div class="card">
         <div class="sec-title"><i class="fas fa-bullhorn" style="color:var(--gold);"></i> Duyuru Bandı</div>
-        <textarea class="inp" id="announcement-inp" rows="3" placeholder="Duyuru metni..."></textarea>
-        <button class="btn btn-gold" style="margin-top:10px;width:100%;justify-content:center;" onclick="saveAnnouncement()"><i class="fas fa-save"></i> Yayınla</button>
-        <p style="font-size:11px;color:var(--muted);margin-top:8px;">Müşteri panellerinde kayan yazı olarak görünür.</p>
+        <textarea class="inp" id="ann-inp" rows="3" placeholder="Duyuru metni..."></textarea>
+        <button class="btn btn-gold" style="margin-top:10px;width:100%;justify-content:center;" onclick="saveAnn()"><i class="fas fa-save"></i> Yayınla</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;">Tüm müşteri panellerinde anlık güncellenir.</p>
       </div>
-
-      <!-- Menü Performansı -->
       <div class="card">
         <div class="sec-title"><i class="fas fa-star" style="color:var(--gold);"></i> Top 5 Ürün</div>
         <div id="top5-list"></div>
       </div>
-
-      <!-- Hızlı Navigasyon -->
       <div class="card">
-        <div class="sec-title"><i class="fas fa-link" style="color:var(--gold);"></i> Hızlı Navigasyon</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Müşteri QR Link'i oluşturun:</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="qr-links"></div>
-        </div>
+        <div class="sec-title"><i class="fas fa-link" style="color:var(--gold);"></i> Hızlı Linkler</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="quick-links"></div>
       </div>
-
     </div>
   </div>
 </div>
-
 <script src="shared.js"></script>
 <script>
-function init() {
-  startClock();
-  render();
-  setInterval(render, 5000);
-  window.addEventListener('storage', e=>{ if(e.key===DB.KEY) render(); });
-}
+let currentTables=[], currentZ={};
+
+window.addEventListener('DOMContentLoaded', async () => {
+  showLoading('Admin paneli yükleniyor...');
+  try {
+    await FDB.init();
+    hideLoading();
+    startClock();
+    FDB.watchTables(tables=>{ currentTables=tables; render(); });
+    FDB.watchZReport(z=>{ currentZ=z; render(); });
+    FDB.watchAnnouncements(a=>{ const el=document.getElementById('ann-inp'); if(el&&document.activeElement!==el) el.value=a||''; });
+  } catch(e) {
+    hideLoading();
+    toast('Bağlantı hatası: '+e.message,'critical');
+  }
+});
 
 function render() {
-  const state = DB.get();
-  const z = state.zReport || {};
-  const tables = state.tables || [];
+  const z=currentZ; const tables=currentTables;
+  document.getElementById('report-date').textContent=`Açılış: ${z.openedAt?new Date(z.openedAt).toLocaleString('tr-TR'):'—'}`;
+  const topEntry=Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1])[0];
+  const topMenu=topEntry?menuById(topEntry[0]):null;
+  const occ=tables.filter(t=>t.status==='occupied').length;
+  const avgOrder=z.orderCount>0?Math.round((z.totalRevenue||0)/z.orderCount):0;
 
-  // Date
-  document.getElementById('report-date').textContent =
-    `Rapor Başlangıcı: ${z.openedAt ? new Date(z.openedAt).toLocaleString('tr-TR') : '—'} · Şu an: ${new Date().toLocaleString('tr-TR')}`;
-
-  // Announcement
-  const annInp = document.getElementById('announcement-inp');
-  if(annInp && document.activeElement !== annInp) annInp.value = state.announcements || '';
-
-  // Stats
-  const topItemEntry = Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1])[0];
-  const topMenu = topItemEntry ? menuById(topItemEntry[0]) : null;
-  const totalRev = z.totalRevenue || 0;
-  const orderCount = z.orderCount || 0;
-  const avgOrder = orderCount > 0 ? Math.round(totalRev/orderCount) : 0;
-  const occupied = tables.filter(t=>t.status==='occupied').length;
-
-  document.getElementById('stats-grid').innerHTML = [
-    {val:`${totalRev.toLocaleString('tr-TR')}₺`, label:'Günlük Ciro', icon:'fa-lira-sign', col:'#f0c060', sub:`${orderCount} sipariş`},
-    {val:avgOrder+'₺', label:'Ortalama Sipariş', icon:'fa-receipt', col:'#7dd3fc', sub:'sipariş başına'},
-    {val:topMenu?topMenu.name.substring(0,14):'—', label:'En Çok Satan', icon:'fa-fire', col:'#ff8080', sub:topItemEntry?`${topItemEntry[1]}× satıldı`:''},
-    {val:`${occupied}/${tables.length}`, label:'Dolu Masa', icon:'fa-chair', col:'#4ade80', sub:tables.filter(t=>t.waiter_call).length+' garson çağrısı'},
-  ].map(s=>`<div class="stat-card">
-    <i class="fas ${s.icon}" style="color:${s.col};font-size:18px;"></i>
+  document.getElementById('stats-grid').innerHTML=[
+    {val:`${(z.totalRevenue||0).toLocaleString('tr-TR')}₺`,label:'Günlük Ciro',icon:'fa-lira-sign',col:'#f0c060',sub:`${z.orderCount||0} sipariş`},
+    {val:avgOrder+'₺',label:'Ort. Sipariş',icon:'fa-receipt',col:'#7dd3fc',sub:'sipariş başına'},
+    {val:topMenu?topMenu.name.substring(0,14)+'…':'—',label:'En Çok Satan',icon:'fa-fire',col:'#ff8080',sub:topEntry?`${topEntry[1]}× satıldı`:''},
+    {val:`${occ}/${tables.length}`,label:'Dolu Masa',icon:'fa-chair',col:'#4ade80',sub:tables.filter(t=>t.waiter_call).length+' çağrı'},
+  ].map(s=>`<div class="stat-card"><i class="fas ${s.icon}" style="color:${s.col};font-size:18px;"></i>
     <div class="stat-val" style="color:${s.col};">${s.val}</div>
     <div class="stat-label">${s.label}</div>
-    <div class="stat-sub">${s.sub}</div>
+    <div style="font-size:10px;color:var(--muted);">${s.sub}</div>
   </div>`).join('');
 
-  // Sales Chart
-  const topItems = Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const maxQty = topItems.length ? Math.max(...topItems.map(e=>e[1])) : 1;
-  document.getElementById('sales-chart').innerHTML = topItems.length === 0
-    ? `<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">Henüz satış verisi yok.</p>`
-    : topItems.map(([id,qty])=>{
-        const m=menuById(id); if(!m) return '';
-        const rev=m.price*qty;
-        const pct=Math.round((qty/maxQty)*100);
-        return`<div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
-            <span style="font-weight:500;">${m.name}</span>
-            <span style="color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;">${qty}× &middot; ${rev}₺</span>
-          </div>
-          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;"></div></div>
-        </div>`;
-      }).join('');
+  const topItems=Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxQ=topItems.length?Math.max(...topItems.map(e=>e[1])):1;
+  document.getElementById('sales-chart').innerHTML=topItems.length===0
+    ?`<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">Henüz satış verisi yok.</p>`
+    :topItems.map(([id,qty])=>{const m=menuById(id);if(!m)return'';const pct=Math.round((qty/maxQ)*100);return`
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="font-weight:500;">${m.name}</span>
+        <span style="color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;">${qty}× · ${m.price*qty}₺</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;"></div></div>
+    </div>`;}).join('');
 
-  // Category Chart
-  const catRev = {};
-  Object.entries(z.topItems||{}).forEach(([id,qty])=>{
-    const m=menuById(id); if(!m) return;
-    catRev[m.cat]=(catRev[m.cat]||0)+m.price*qty;
-  });
+  const catRev={};
+  Object.entries(z.topItems||{}).forEach(([id,qty])=>{const m=menuById(id);if(m)catRev[m.cat]=(catRev[m.cat]||0)+m.price*qty;});
   const catNames={burger:'Burgerler',pizza:'Pizzalar',pasta:'Makarna',salad:'Salata',dessert:'Tatlılar',drink:'İçecekler'};
   const catColors={burger:'#f0c060',pizza:'#ff8080',pasta:'#7dd3fc',salad:'#4ade80',dessert:'#c4b5fd',drink:'#38bdf8'};
   const catTotal=Object.values(catRev).reduce((a,b)=>a+b,0)||1;
-  document.getElementById('category-chart').innerHTML = Object.keys(catNames).map(cat=>{
-    const rev=catRev[cat]||0;
-    const pct=Math.round((rev/catTotal)*100);
+  document.getElementById('category-chart').innerHTML=Object.keys(catNames).map(cat=>{
+    const rev=catRev[cat]||0; const pct=Math.round((rev/catTotal)*100);
     return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-      <span style="min-width:70px;font-size:11px;color:var(--muted);">${catNames[cat]}</span>
+      <span style="min-width:68px;font-size:11px;color:var(--muted);">${catNames[cat]}</span>
       <div class="prog-bar" style="flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,0.05);">
         <div style="height:100%;width:${pct}%;background:${catColors[cat]};border-radius:4px;transition:width .6s;"></div>
       </div>
-      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:${catColors[cat]};min-width:50px;text-align:right;">${rev}₺</span>
-    </div>`;
-  }).join('');
+      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:${catColors[cat]};min-width:48px;text-align:right;">${rev}₺</span>
+    </div>`;}).join('');
 
-  // Top 5
-  document.getElementById('top5-list').innerHTML = topItems.slice(0,5).map(([id,qty],i)=>{
-    const m=menuById(id); if(!m) return '';
+  document.getElementById('top5-list').innerHTML=topItems.slice(0,5).map(([id,qty],i)=>{
+    const m=menuById(id);if(!m)return'';
     const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
     return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
       <span style="font-size:16px;">${medals[i]}</span>
-      <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${m.name}</div><div style="font-size:10px;color:var(--muted);">${m.cat} · ${m.price}₺</div></div>
+      <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${m.name}</div><div style="font-size:10px;color:var(--muted);">${m.price}₺</div></div>
       <span class="syne" style="font-weight:800;color:var(--gold);">${qty}×</span>
-    </div>`;
-  }).join('') || `<p style="color:var(--muted);font-size:13px;">Henüz veri yok.</p>`;
+    </div>`;}).join('')||`<p style="color:var(--muted);font-size:13px;">Henüz veri yok.</p>`;
 
-  // Table status grid
-  document.getElementById('table-status-grid').innerHTML = tables.map(t=>{
+  document.getElementById('table-status-grid').innerHTML=tables.map(t=>{
     const col=t.status==='free'?'#4ade80':t.status==='reserved'?'#ff8080':'#f0c060';
     const emoji=t.status==='free'?'🟢':t.status==='reserved'?'🔴':'🟡';
     return`<div class="ts-dot" style="border-color:${col}30;background:${col}08;">
@@ -263,64 +190,44 @@ function render() {
         <option value="occupied" ${t.status==='occupied'?'selected':''}>Dolu</option>
         <option value="reserved" ${t.status==='reserved'?'selected':''}>Rezerve</option>
       </select>
-    </div>`;
-  }).join('');
+    </div>`;}).join('');
 
-  // QR Links
-  document.getElementById('qr-links').innerHTML = [1,2,3,4,5,6].map(id=>`
-  <a href="musteri.html?masa=${id}" class="btn btn-ghost btn-sm" target="_blank">M${id} <i class="fas fa-external-link-alt"></i></a>`).join('');
+  const base=window.location.origin+window.location.pathname.replace('admin.html','');
+  document.getElementById('quick-links').innerHTML=[1,2,3,4,5,6].map(id=>
+    `<a href="musteri.html?masa=${id}" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" target="_blank">M${id} <i class="fas fa-external-link-alt"></i></a>`
+  ).join('')+`
+  <a href="mutfak.html" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" target="_blank">Mutfak <i class="fas fa-external-link-alt"></i></a>
+  <a href="garson.html" class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" target="_blank">Garson <i class="fas fa-external-link-alt"></i></a>`;
 }
 
-function setTableStatus(id, status) {
-  DB.update(s=>{ const t=s.tables.find(t=>t.id===id); if(t) t.status=status; });
-  toast(`Masa ${id} → ${status==='free'?'Boş':status==='reserved'?'Rezerve':'Dolu'} yapıldı`,'success');
-  render();
+async function setTableStatus(id,status){
+  await FDB.updateTable(id,{status});
+  toast(`Masa ${id} → ${status==='free'?'Boş':status==='reserved'?'Rezerve':'Dolu'}`,'success');
 }
 
-function saveAnnouncement() {
-  const val = document.getElementById('announcement-inp').value;
-  DB.update(s=>{ s.announcements=val; });
-  toast('✅ Duyuru tüm müşteri panellerinde yayınlandı!','success');
+async function saveAnn(){
+  const val=document.getElementById('ann-inp').value;
+  await FDB.setAnnouncements(val);
+  toast('✅ Duyuru tüm cihazlarda anlık güncellendi!','success');
 }
 
-function resetDay() {
-  if(!confirm('Tüm günlük verileri (Z-raporu, siparişler) sıfırlamak istediğinizden emin misiniz?\nBu işlem geri alınamaz.')) return;
-  DB.update(s=>{
-    s.zReport = { totalRevenue:0, orderCount:0, topItems:{}, openedAt:new Date().toISOString() };
-    s.tables.forEach(t=>{ t.orders=[]; t.status='free'; t.order_time=null; t.waiter_call=false; t.waiter_call_time=null; t.note=''; t.merged_with=null; });
-  });
+async function resetDay(){
+  if(!confirm('Tüm günlük verileri sıfırlamak istediğinizden emin misiniz?\nBu işlem geri alınamaz.'))return;
+  await FDB.resetDay();
   toast('🔄 Gün başarıyla sıfırlandı!','success');
-  render();
 }
 
-function exportReport() {
-  const state = DB.get();
-  const z = state.zReport;
-  const lines = [
-    'SmartPOS — Z-RAPORU',
-    '=====================',
-    `Tarih: ${new Date().toLocaleString('tr-TR')}`,
-    `Açılış: ${z.openedAt ? new Date(z.openedAt).toLocaleString('tr-TR') : '—'}`,
-    '',
-    `Günlük Ciro: ${(z.totalRevenue||0).toLocaleString('tr-TR')}₺`,
-    `Toplam Sipariş: ${z.orderCount||0}`,
-    `Ortalama Sipariş: ${z.orderCount>0?Math.round((z.totalRevenue||0)/(z.orderCount||1)):0}₺`,
-    '',
-    'SATIŞ DETAYI:',
-    '-------------',
-    ...Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1]).map(([id,qty])=>{
-      const m=menuById(id); return m?`${m.name}: ${qty}× — ${m.price*qty}₺`:'';
-    }),
+async function exportReport(){
+  const z=currentZ;
+  const lines=['SmartPOS — Z-RAPORU','====================',`Tarih: ${new Date().toLocaleString('tr-TR')}`,`Açılış: ${z.openedAt?new Date(z.openedAt).toLocaleString('tr-TR'):'—'}`,'',
+    `Günlük Ciro: ${(z.totalRevenue||0).toLocaleString('tr-TR')}₺`,`Toplam Sipariş: ${z.orderCount||0}`,`Ortalama: ${z.orderCount>0?Math.round((z.totalRevenue||0)/z.orderCount):0}₺`,'','SATIŞ DETAYI:','-------------',
+    ...Object.entries(z.topItems||{}).sort((a,b)=>b[1]-a[1]).map(([id,qty])=>{ const m=menuById(id); return m?`${m.name}: ${qty}× — ${m.price*qty}₺`:''; }),
   ].join('\n');
-  const blob = new Blob([lines], {type:'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url; a.download=`Z-Raporu-${new Date().toLocaleDateString('tr-TR').replace(/\//g,'-')}.txt`;
-  a.click(); URL.revokeObjectURL(url);
+  const blob=new Blob([lines],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`Z-Raporu-${new Date().toLocaleDateString('tr-TR').replace(/\//g,'-')}.txt`;a.click();URL.revokeObjectURL(url);
   toast('📥 Z-Raporu indirildi!','success');
 }
-
-window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
