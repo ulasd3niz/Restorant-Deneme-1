@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SmartPOS — Mutfak Ekranı</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--blue:#38bdf8;
+  --bg:#080810;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.syne{font-family:'Syne',sans-serif;}
+
+/* NAV */
+.nav{background:rgba(8,8,16,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-left{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:34px;height:34px;border-radius:9px;background:rgba(255,75,75,0.15);border:1px solid rgba(255,75,75,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+/* BUTTON */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:1px solid transparent;transition:all .2s;}
+.btn-ghost{background:var(--glass);border-color:var(--border);color:var(--text);}
+.btn-ghost:hover{background:var(--glass2);}
+.btn-green{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.35);color:#4ade80;}
+.btn-green:hover{background:rgba(34,197,94,0.25);}
+.btn-red{background:rgba(255,75,75,0.15);border-color:rgba(255,75,75,0.35);color:#ff8080;}
+.btn-red:hover{background:rgba(255,75,75,0.25);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1000;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-xs{padding:3px 7px;font-size:10px;border-radius:6px;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.b-gold{background:rgba(240,192,96,0.12);color:var(--gold);border:1px solid rgba(240,192,96,0.22);}
+.b-red{background:rgba(255,75,75,0.12);color:#ff8080;border:1px solid rgba(255,75,75,0.22);}
+.b-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.22);}
+.b-blue{background:rgba(56,189,248,0.12);color:#7dd3fc;border:1px solid rgba(56,189,248,0.22);}
+
+/* CARDS */
+.card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;}
+
+/* CRITICAL ALARM */
+@keyframes critAlarm{
+  0%,100%{border-color:rgba(255,75,75,0.3);box-shadow:0 0 0 rgba(255,75,75,0);}
+  50%{border-color:rgba(255,75,75,0.9);box-shadow:0 0 28px rgba(255,75,75,0.35);}
+}
+.critical-alarm{animation:critAlarm 1.3s ease-in-out infinite;}
+
+/* ORDER CARD */
+.order-card{border-radius:16px;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .3s;}
+.order-card:hover{background:var(--glass2);}
+.oc-header{display:flex;align-items:center;justify-content:space-between;}
+.oc-table{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;}
+.oc-elapsed{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;}
+.oc-items{display:flex;flex-direction:column;gap:6px;}
+.oc-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);}
+.oc-qty{font-family:'Syne',sans-serif;font-weight:800;font-size:11px;background:rgba(240,192,96,0.15);color:var(--gold);border:1px solid rgba(240,192,96,0.2);padding:2px 7px;border-radius:6px;}
+.oc-name{font-size:13px;flex:1;}
+.oc-prep{font-size:10px;color:var(--muted);}
+.oc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:4px;border-top:1px solid var(--border);}
+.prog-bar{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .6s ease;}
+.prog-fill.crit{background:linear-gradient(90deg,#ff4b4b,#ff8080);}
+
+/* WAITER CALLS BAR */
+.waiter-bar{padding:12px 20px;border-bottom:1px solid rgba(255,75,75,0.2);background:rgba(255,75,75,0.04);display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:16px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--border);}
+.stat-item{display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--gold);}
+.stat-label{font-size:10px;color:var(--muted);}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;color:var(--muted);}
+.empty-icon{font-size:56px;margin-bottom:14px;}
+
+/* SCROLL */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
+@keyframes toastIn{from{transform:translateX(120px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideDown{from{transform:translateY(-10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.new-order-flash{animation:slideDown .4s ease;}
+
+/* GRID */
+.orders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;padding:16px 20px;}
+@media(max-width:600px){.orders-grid{grid-template-columns:1fr;padding:12px;}}
+</style>
+</head>
+<body>
+<div id="toast-zone"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-left">
+    <div class="logo-icon">🔥</div>
+    <div>
+      <div class="nav-title">Mutfak Ekranı</div>
+    </div>
+    <span class="badge b-red"><span style="width:6px;height:6px;border-radius:50%;background:#ff4b4b;display:inline-block;margin-right:4px;animation:pulse 1.2s infinite;"></span>CANLI</span>
+  </div>
+  <div class="nav-right">
+    <div class="syne" style="font-size:13px;color:var(--muted);">Saat: <span id="live-clock" style="color:var(--text);font-weight:700;"></span></div>
+    <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i></a>
+  </div>
+</nav>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item"><div class="stat-val" id="stat-active">0</div><div class="stat-label">Aktif Sipariş</div></div>
+  <div class="stat-item"><div class="stat-val" id="stat-items">0</div><div class="stat-label">Toplam Kalem</div></div>
+  <div class="stat-item"><div class="stat-val" id="stat-critical" style="color:#ff8080;">0</div><div class="stat-label">Geciken (15dk+)</div></div>
+  <div class="stat-item"><div class="stat-val" id="stat-waiter" style="color:#7dd3fc;">0</div><div class="stat-label">Garson Çağrısı</div></div>
+</div>
+
+<!-- WAITER CALLS -->
+<div id="waiter-calls-bar" style="display:none;"></div>
+
+<!-- ORDERS GRID -->
+<div class="orders-grid" id="orders-grid">
+  <div class="empty-state" style="grid-column:1/-1;">
+    <div class="empty-icon">✅</div>
+    <div class="syne" style="font-size:18px;font-weight:800;margin-bottom:6px;">Yükleniyor...</div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let prevOrderIds = new Set();
+
+function init() {
+  startClock();
+  render();
+  // 3 saniyede polling
+  setInterval(render, 3000);
+  // StorageEvent: anlık cross-tab
+  window.addEventListener('storage', e => {
+    if(e.key !== DB.KEY) return;
+    render();
+  });
+}
+
+function render() {
+  const state = DB.get();
+  const now = Date.now();
+  const activeTables = state.tables.filter(t=>(t.orders||[]).length > 0);
+
+  // Stats
+  const totalItems = activeTables.reduce((s,t)=>s+(t.orders||[]).reduce((a,o)=>a+o.qty,0),0);
+  const critical = activeTables.filter(t=>{
+    if(!t.order_time) return false;
+    return (now - new Date(t.order_time).getTime()) / 60000 >= 15;
+  });
+  const waiterCalls = state.tables.filter(t=>t.waiter_call);
+  document.getElementById('stat-active').textContent = activeTables.length;
+  document.getElementById('stat-items').textContent = totalItems;
+  document.getElementById('stat-critical').textContent = critical.length;
+  document.getElementById('stat-waiter').textContent = waiterCalls.length;
+
+  // Waiter calls bar
+  const wcBar = document.getElementById('waiter-calls-bar');
+  if(waiterCalls.length > 0) {
+    wcBar.style.display='flex';
+    wcBar.className = 'waiter-bar';
+    wcBar.innerHTML = `<i class="fas fa-bell fa-beat" style="color:#ff8080;font-size:14px;"></i>
+    <span class="syne" style="font-weight:700;color:#ff8080;font-size:13px;">Garson Çağrıları:</span>
+    ${waiterCalls.map(t=>`
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,75,75,0.08);border:1px solid rgba(255,75,75,0.2);border-radius:8px;padding:5px 10px;">
+      <i class="fas fa-chair" style="color:#ff8080;font-size:11px;"></i>
+      <span class="syne" style="font-weight:800;font-size:12px;">Masa ${t.id}</span>
+      <span style="font-size:10px;color:var(--muted);">${t.waiter_call_time?timeSince(t.waiter_call_time):''}</span>
+      <button class="btn btn-green btn-xs" onclick="clearWaiterCall(${t.id})">Gidildi ✓</button>
+    </div>`).join('')}`;
+  } else {
+    wcBar.style.display='none';
+  }
+
+  // New order toast
+  const currentIds = new Set(activeTables.map(t=>t.id+':'+(t.order_time||'')));
+  currentIds.forEach(key=>{
+    if(!prevOrderIds.has(key)) {
+      const tid = parseInt(key.split(':')[0]);
+      toast(`🆕 Masa ${tid} — Yeni sipariş geldi!`,'warn');
+      playBeep(660, 0.4);
+    }
+  });
+  prevOrderIds = currentIds;
+
+  // Orders grid
+  const grid = document.getElementById('orders-grid');
+  if(!activeTables.length) {
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;">
+      <div class="empty-icon">✅</div>
+      <div class="syne" style="font-size:20px;font-weight:800;margin-bottom:6px;">Tüm Siparişler Tamamlandı!</div>
+      <div style="color:var(--muted);font-size:13px;">Bekleyen sipariş yok.</div>
+    </div>`;
+    return;
+  }
+  // Sort: critical first
+  const sorted = [...activeTables].sort((a,b)=>{
+    const ea = a.order_time ? (now-new Date(a.order_time).getTime())/60000 : 0;
+    const eb = b.order_time ? (now-new Date(b.order_time).getTime())/60000 : 0;
+    return eb-ea;
+  });
+  grid.innerHTML = sorted.map(t=>renderOrderCard(t,now)).join('');
+}
+
+function renderOrderCard(table, now) {
+  const elapsed = table.order_time ? Math.floor((now-new Date(table.order_time).getTime())/60000) : 0;
+  const isCritical = elapsed >= 15;
+  const totalPrep = (table.orders||[]).reduce((s,o)=>{const m=menuById(o.id);return s+(m?m.prep:0);},0);
+  const progPct = Math.min(100, totalPrep>0 ? Math.round((elapsed/totalPrep)*100) : 0);
+  const total = tableTotal(table);
+
+  return `<div class="order-card ${isCritical?'critical-alarm':''}">
+    <div class="oc-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="oc-table" style="color:${isCritical?'#ff8080':'var(--gold)'};">Masa ${table.id}</span>
+        <span class="badge ${isCritical?'b-red':'b-blue'}">${elapsed}dk</span>
+        ${table.waiter_call?`<span class="badge b-red"><i class="fas fa-bell fa-beat"></i> Çağrı</span>`:''}
+      </div>
+      <button class="btn btn-green btn-sm" onclick="completeOrder(${table.id})"><i class="fas fa-check"></i> Hazır</button>
+    </div>
+    <div class="prog-bar"><div class="prog-fill ${isCritical?'crit':''}" style="width:${progPct}%;"></div></div>
+    ${isCritical?`<div style="padding:6px 10px;border-radius:8px;background:rgba(255,75,75,0.1);border:1px solid rgba(255,75,75,0.25);font-size:11px;font-weight:700;color:#ff8080;text-align:center;">
+      <i class="fas fa-triangle-exclamation"></i> KRİTİK GECİKME — ${elapsed} dakika!</div>`:''}
+    <div class="oc-items">
+      ${(table.orders||[]).map(o=>{const m=menuById(o.id);if(!m)return'';return`
+      <div class="oc-item">
+        <span class="oc-qty">${o.qty}×</span>
+        <span class="oc-name">${m.name}</span>
+        <span class="oc-prep">${m.prep}dk</span>
+        ${m.hot?'<span style="font-size:11px;">🌶️</span>':''}
+        ${m.vegan?'<span style="font-size:11px;">🌿</span>':''}
+      </div>`;}).join('')}
+    </div>
+    ${table.note?`<div style="padding:8px 10px;border-radius:8px;background:rgba(240,192,96,0.05);border:1px solid rgba(240,192,96,0.12);font-size:11px;color:var(--muted);"><i class="fas fa-sticky-note" style="color:var(--gold);margin-right:4px;"></i>${table.note}</div>`:''}
+    <div class="oc-foot">
+      <span style="font-size:11px;color:var(--muted);">${table.seats} kişi · ${(table.orders||[]).reduce((s,o)=>s+o.qty,0)} kalem</span>
+      <span class="syne" style="font-weight:800;color:var(--gold);">${total}₺</span>
+    </div>
+  </div>`;
+}
+
+function completeOrder(tableId) {
+  DB.update(state=>{
+    const table = state.tables.find(t=>t.id===tableId);
+    if(!table) return;
+    // Z-raporuna ekle
+    const rev = tableTotal(table);
+    state.zReport.totalRevenue += rev;
+    state.zReport.orderCount++;
+    (table.orders||[]).forEach(o=>{
+      state.zReport.topItems[o.id] = (state.zReport.topItems[o.id]||0)+o.qty;
+    });
+    table.orders = [];
+    table.status = 'free';
+    table.order_time = null;
+  });
+  playBeep(880, 0.6);
+  toast(`✅ Masa ${tableId} siparişi hazırlandı ve teslim edildi!`,'success');
+  render();
+}
+
+function clearWaiterCall(tableId) {
+  DB.update(state=>{
+    const t=state.tables.find(t=>t.id===tableId);
+    if(t){t.waiter_call=false;t.waiter_call_time=null;}
+  });
+  toast(`Masa ${tableId} garson çağrısı kapatıldı.`,'success');
+  render();
+}
+
+function timeSince(iso) {
+  const min = Math.floor((Date.now()-new Date(iso).getTime())/60000);
+  return min < 1 ? 'az önce' : `${min}dk önce`;
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

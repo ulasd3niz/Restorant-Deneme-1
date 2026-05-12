@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SmartPOS — Portal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#f0c060;--gold2:#e8a020;--bg:#0a0a0f;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.syne{font-family:'Syne',sans-serif;}
+/* mesh bg */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(240,192,96,0.07) 0%,transparent 70%),radial-gradient(ellipse 60% 80% at 80% 100%,rgba(56,189,248,0.05) 0%,transparent 70%);pointer-events:none;}
+.logo{display:flex;align-items:center;gap:14px;margin-bottom:48px;}
+.logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:22px;}
+.logo-text{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--gold);letter-spacing:-1px;}
+.subtitle{color:var(--muted);font-size:13px;margin-top:2px;}
+
+.portal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;max-width:680px;}
+@media(max-width:520px){.portal-grid{grid-template-columns:1fr;}}
+
+.portal-card{border-radius:20px;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(20px);padding:28px 24px;cursor:pointer;transition:all .3s;text-decoration:none;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.portal-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;}
+.portal-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.16);box-shadow:0 24px 56px rgba(0,0,0,0.5);}
+.portal-card:hover::before{opacity:1;}
+
+.pc-customer::before{background:radial-gradient(ellipse at top right,rgba(240,192,96,0.08),transparent 70%);}
+.pc-kitchen::before{background:radial-gradient(ellipse at top right,rgba(255,75,75,0.08),transparent 70%);}
+.pc-waiter::before{background:radial-gradient(ellipse at top right,rgba(34,197,94,0.08),transparent 70%);}
+.pc-admin::before{background:radial-gradient(ellipse at top right,rgba(167,139,250,0.08),transparent 70%);}
+
+.pc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:4px;}
+.pc-customer .pc-icon{background:rgba(240,192,96,0.12);color:var(--gold);}
+.pc-kitchen .pc-icon{background:rgba(255,75,75,0.12);color:#ff8080;}
+.pc-waiter .pc-icon{background:rgba(34,197,94,0.12);color:#4ade80;}
+.pc-admin .pc-icon{background:rgba(167,139,250,0.12);color:#c4b5fd;}
+
+.pc-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);}
+.pc-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.pc-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-top:4px;}
+.badge-gold{background:rgba(240,192,96,0.12);color:var(--gold);border:1px solid rgba(240,192,96,0.25);}
+.badge-red{background:rgba(255,75,75,0.12);color:#ff8080;border:1px solid rgba(255,75,75,0.25);}
+.badge-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.25);}
+.badge-purple{background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.25);}
+
+/* masa seçici */
+.masa-picker{display:none;flex-direction:column;gap:10px;margin-top:8px;}
+.masa-picker.open{display:flex;}
+.masa-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.masa-btn{padding:6px 14px;border-radius:8px;border:1px solid rgba(240,192,96,0.3);background:rgba(240,192,96,0.06);color:var(--gold);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.masa-btn:hover{background:rgba(240,192,96,0.14);}
+.masa-label{font-size:11px;color:var(--muted);}
+
+.footer-note{margin-top:36px;font-size:11px;color:var(--muted);text-align:center;line-height:1.7;}
+.arrow{position:absolute;bottom:20px;right:20px;color:var(--muted);font-size:12px;transition:all .3s;}
+.portal-card:hover .arrow{color:var(--gold);transform:translateX(4px);}
+@keyframes toastIn{from{transform:translateX(100px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+</style>
+</head>
+<body>
+<div id="toast-zone"></div>
+
+<div class="logo">
+  <div class="logo-icon">🍽️</div>
+  <div>
+    <div class="logo-text">SmartPOS</div>
+    <div class="subtitle">Gastronomi Deneyim Sistemi</div>
+  </div>
+</div>
+
+<div class="portal-grid">
+
+  <!-- MÜŞTERİ -->
+  <div class="portal-card pc-customer" onclick="toggleMasa()">
+    <div class="pc-icon"><i class="fas fa-user"></i></div>
+    <div class="pc-title">Müşteri Paneli</div>
+    <div class="pc-desc">Dijital menü, sepet, sipariş gönder, Jukebox, garson çağır, canlı bekleme süresi.</div>
+    <span class="pc-badge badge-gold"><i class="fas fa-mobile-alt"></i> Müşteri</span>
+    <div class="masa-picker" id="masa-picker">
+      <div class="masa-label">Masa numaranızı seçin:</div>
+      <div class="masa-grid" id="masa-grid"></div>
+    </div>
+    <span class="arrow">→</span>
+  </div>
+
+  <!-- MUTFAK -->
+  <a class="portal-card pc-kitchen" href="mutfak.html">
+    <div class="pc-icon"><i class="fas fa-fire-burner"></i></div>
+    <div class="pc-title">Mutfak Ekranı</div>
+    <div class="pc-desc">Anlık gelen siparişler, hazırlık takibi, kritik alarm, sesli bildirim, garson çağrı uyarıları.</div>
+    <span class="pc-badge badge-red"><i class="fas fa-fire"></i> Mutfak</span>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- GARSON -->
+  <a class="portal-card pc-waiter" href="garson.html">
+    <div class="pc-icon"><i class="fas fa-concierge-bell"></i></div>
+    <div class="pc-title">Garson / POS</div>
+    <div class="pc-desc">Masa haritası, sipariş ekleme, masa taşıma & birleştirme, parçalı ödeme (Split Bill).</div>
+    <span class="pc-badge badge-green"><i class="fas fa-cash-register"></i> POS</span>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- ADMIN -->
+  <a class="portal-card pc-admin" href="admin.html">
+    <div class="pc-icon"><i class="fas fa-chart-line"></i></div>
+    <div class="pc-title">Admin / Z-Raporu</div>
+    <div class="pc-desc">Günlük ciro, satış analizi, duyuru bandı yönetimi, masa durumu kontrolü, gün sıfırlama.</div>
+    <span class="pc-badge badge-purple"><i class="fas fa-shield-halved"></i> Admin</span>
+    <span class="arrow">→</span>
+  </a>
+
+</div>
+
+<div class="footer-note">
+  Tüm veriler tarayıcı <strong>LocalStorage</strong>'da saklanır · Backend gerekmez<br/>
+  Farklı sekmelerde açarak paneller arası gerçek zamanlı iletişimi test edebilirsiniz
+</div>
+
+<script src="shared.js"></script>
+<script>
+function toggleMasa() {
+  const picker = document.getElementById('masa-picker');
+  picker.classList.toggle('open');
+  if (picker.classList.contains('open')) buildMasaGrid();
+}
+
+function buildMasaGrid() {
+  const grid = document.getElementById('masa-grid');
+  const state = DB.get();
+  grid.innerHTML = state.tables.map(t => {
+    const col = t.status==='occupied'?'#f0c060':t.status==='reserved'?'#ff8080':'#4ade80';
+    return `<div class="masa-btn" style="color:${col};border-color:${col}40;" onclick="goMasa(${t.id},event)">
+      M${t.id} <span style="font-size:9px;opacity:.7;">${t.status==='free'?'Boş':t.status==='reserved'?'Rezerve':'Dolu'}</span>
+    </div>`;
+  }).join('');
+}
+
+function goMasa(id, e) {
+  e.stopPropagation();
+  window.location.href = `musteri.html?masa=${id}`;
+}
+</script>
+</body>
+</html>
