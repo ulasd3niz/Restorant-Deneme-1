@@ -271,7 +271,15 @@ const FDB = {
 };
 
 /* ─── HELPERS ─── */
-function menuById(id) { return MENU.find(m => m.id === id); }
+function menuById(id) {
+  if(!id) return null;
+  // Try exact match first, then try padding (m1 → m01)
+  let m = MENU.find(m => m.id === id);
+  if(!m && id.startsWith('m') && id.length === 2) {
+    m = MENU.find(m => m.id === 'm0' + id[1]);
+  }
+  return m || null;
+}
 
 function tableTotal(table) {
   const orders = table.orders || {};
