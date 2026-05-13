@@ -7,11 +7,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--bg:#080810;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
+:root{--gold:#f0c060;--gold2:#e8a020;--red:#ff4b4b;--green:#22c55e;--bg:#080810;
+  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#7878a0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .syne{font-family:'Syne',sans-serif;}
-.nav{background:rgba(8,8,16,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:1px solid transparent;transition:all .2s;text-decoration:none;}
+.nav{background:rgba(8,8,16,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;
+  border:1px solid transparent;transition:all .2s;text-decoration:none;}
 .btn-ghost{background:var(--glass);border-color:var(--border);color:var(--text);}
 .btn-ghost:hover{background:var(--glass2);}
 .btn-green{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.35);color:#4ade80;}
@@ -22,173 +27,237 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .b-red{background:rgba(255,75,75,0.12);color:#ff8080;border:1px solid rgba(255,75,75,0.22);}
 .b-blue{background:rgba(56,189,248,0.12);color:#7dd3fc;border:1px solid rgba(56,189,248,0.22);}
 .b-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.22);}
-@keyframes critAlarm{0%,100%{border-color:rgba(255,75,75,0.3);}50%{border-color:rgba(255,75,75,0.9);box-shadow:0 0 28px rgba(255,75,75,0.35);}}
+@keyframes critAlarm{
+  0%,100%{border-color:rgba(255,75,75,0.3);}
+  50%{border-color:rgba(255,75,75,0.9);box-shadow:0 0 28px rgba(255,75,75,0.35);}
+}
 .critical-alarm{animation:critAlarm 1.3s ease-in-out infinite;}
-.order-card{border-radius:16px;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .3s;}
+.order-card{border-radius:16px;border:1px solid var(--border);background:var(--glass);
+  backdrop-filter:blur(16px);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .3s;}
 .prog-bar{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .6s ease;}
 .prog-fill.crit{background:linear-gradient(90deg,#ff4b4b,#ff8080);}
 .stats-bar{display:flex;gap:16px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--border);}
 .stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--gold);}
 .stat-label{font-size:10px;color:var(--muted);}
-.waiter-bar{padding:12px 20px;border-bottom:1px solid rgba(255,75,75,0.2);background:rgba(255,75,75,0.04);display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
+.waiter-bar{padding:12px 20px;border-bottom:1px solid rgba(255,75,75,0.2);
+  background:rgba(255,75,75,0.04);display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
 .orders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;padding:16px 20px;}
 @media(max-width:600px){.orders-grid{grid-template-columns:1fr;padding:12px;}}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px;}
 @keyframes toastIn{from{transform:translateX(120px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes slideDown{from{transform:translateY(-10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.new-order{animation:slideDown .4s ease;}
 </style>
 </head>
 <body>
 <div id="toast-zone"></div>
+
 <nav class="nav">
   <div style="display:flex;align-items:center;gap:12px;">
     <div style="width:34px;height:34px;border-radius:9px;background:rgba(255,75,75,0.15);border:1px solid rgba(255,75,75,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;">🔥</div>
     <div class="syne" style="font-weight:800;font-size:16px;">Mutfak Ekranı</div>
-    <span class="badge b-red"><span style="width:6px;height:6px;border-radius:50%;background:#ff4b4b;display:inline-block;margin-right:4px;animation:pulse 1.2s infinite;"></span>CANLI</span>
+    <span class="badge b-red">
+      <span style="width:6px;height:6px;border-radius:50%;background:#ff4b4b;display:inline-block;margin-right:4px;animation:pulse 1.2s infinite;"></span>
+      CANLI
+    </span>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <div class="syne" style="font-size:13px;color:var(--muted);">Saat: <span id="live-clock" style="color:var(--text);font-weight:700;"></span></div>
+    <div class="syne" style="font-size:13px;color:var(--muted);">
+      Saat: <span id="live-clock" style="color:var(--text);font-weight:700;"></span>
+    </div>
     <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i></a>
   </div>
 </nav>
+
 <div class="stats-bar">
   <div><div class="stat-val" id="stat-active">0</div><div class="stat-label">Aktif Sipariş</div></div>
   <div><div class="stat-val" id="stat-items">0</div><div class="stat-label">Toplam Kalem</div></div>
   <div><div class="stat-val" id="stat-critical" style="color:#ff8080;">0</div><div class="stat-label">Geciken 15dk+</div></div>
   <div><div class="stat-val" id="stat-waiter" style="color:#7dd3fc;">0</div><div class="stat-label">Garson Çağrısı</div></div>
 </div>
+
 <div id="waiter-bar" style="display:none;"></div>
+
 <div class="orders-grid" id="orders-grid">
   <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">
     <div style="font-size:48px;margin-bottom:12px;">⏳</div>
-    <div class="syne" style="font-size:18px;font-weight:800;">Firebase'e bağlanıyor...</div>
+    <div class="syne" style="font-size:18px;font-weight:800;">Bağlanıyor...</div>
   </div>
 </div>
+
 <script src="shared.js"></script>
 <script>
-let prevTableKeys = new Set();
+var prevTableKeys = new Set();
 
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', function() {
   showLoading('Mutfak ekranı başlatılıyor...');
-  try {
-    await FDB.init();
+  FDB.init().then(function() {
     hideLoading();
     startClock();
-    FDB.watchTables(tables => render(tables));
-  } catch(e) {
+    FDB.watchTables(function(tables) {
+      render(tables);
+    });
+  }).catch(function(e) {
     hideLoading();
     toast('Bağlantı hatası: ' + e.message, 'critical');
-  }
+  });
 });
 
-function render(tables) {
-  const now = Date.now();
-  const activeTables = tables.filter(t => Object.keys(t.orders||{}).length > 0);
-  const waiterCalls = tables.filter(t => t.waiter_call);
-  const critical = activeTables.filter(t => t.order_time && (now - t.order_time)/60000 >= 15);
+function safeMenuById(id) {
+  var m = menuById(id);
+  if (m) return m;
+  // Bilinmeyen ürün için placeholder döndür
+  return { name: 'Bilinmeyen Ürün (' + id + ')', prep: 10, price: 0, hot: false, vegan: false };
+}
 
+function render(tables) {
+  var now = Date.now();
+
+  // Sadece gerçek sipariş olan masalar
+  var activeTables = tables.filter(function(t) {
+    var orders = t.orders || {};
+    return Object.keys(orders).length > 0;
+  });
+
+  var waiterCalls = tables.filter(function(t) { return t.waiter_call; });
+
+  var critical = activeTables.filter(function(t) {
+    return t.order_time && (now - t.order_time) / 60000 >= 15;
+  });
+
+  var totalItems = activeTables.reduce(function(s, t) {
+    return s + Object.values(t.orders || {}).reduce(function(a, o) { return a + (o.qty || 0); }, 0);
+  }, 0);
+
+  // Stats
   document.getElementById('stat-active').textContent   = activeTables.length;
-  document.getElementById('stat-items').textContent    = activeTables.reduce((s,t)=>s+Object.values(t.orders||{}).reduce((a,o)=>a+o.qty,0),0);
+  document.getElementById('stat-items').textContent    = totalItems;
   document.getElementById('stat-critical').textContent = critical.length;
   document.getElementById('stat-waiter').textContent   = waiterCalls.length;
 
-  // Waiter bar
-  const wb = document.getElementById('waiter-bar');
-  if(waiterCalls.length) {
-    wb.style.display='flex'; wb.className='waiter-bar';
-    wb.innerHTML = `<i class="fas fa-bell fa-beat" style="color:#ff8080;font-size:14px;"></i>
-    <span class="syne" style="color:#ff8080;font-weight:700;font-size:13px;">Garson Çağrıları:</span>
-    ${waiterCalls.map(t=>`<div style="display:flex;align-items:center;gap:6px;background:rgba(255,75,75,0.08);border:1px solid rgba(255,75,75,0.2);border-radius:8px;padding:5px 10px;">
-      <span class="syne" style="font-weight:800;font-size:12px;color:#ff8080;">Masa ${t.id}</span>
-      <span style="font-size:10px;color:var(--muted);">${t.waiter_call_time?timeSince(t.waiter_call_time):''}</span>
-      <button class="btn btn-green btn-xs" onclick="clearWaiterCall(${t.id})">✓ Gidildi</button>
-    </div>`).join('')}`;
-  } else { wb.style.display='none'; }
+  // Waiter calls bar
+  var wb = document.getElementById('waiter-bar');
+  if (waiterCalls.length > 0) {
+    wb.style.display = 'flex';
+    wb.className = 'waiter-bar';
+    var wcHtml = '<i class="fas fa-bell fa-beat" style="color:#ff8080;font-size:14px;"></i>'
+      + '<span class="syne" style="color:#ff8080;font-weight:700;font-size:13px;">Garson Çağrıları:</span>';
+    waiterCalls.forEach(function(t) {
+      wcHtml += '<div style="display:flex;align-items:center;gap:6px;background:rgba(255,75,75,0.08);border:1px solid rgba(255,75,75,0.2);border-radius:8px;padding:5px 10px;">'
+        + '<span class="syne" style="font-weight:800;font-size:12px;color:#ff8080;">Masa ' + t.id + '</span>'
+        + '<span style="font-size:10px;color:var(--muted);">' + (t.waiter_call_time ? timeSince(t.waiter_call_time) : '') + '</span>'
+        + '<button class="btn btn-green btn-xs" onclick="clearWaiterCall(' + t.id + ')">✓ Gidildi</button>'
+        + '</div>';
+    });
+    wb.innerHTML = wcHtml;
+  } else {
+    wb.style.display = 'none';
+  }
 
-  // New order detection
-  const currentKeys = new Set(activeTables.map(t=>`${t.id}:${t.order_time||''}`));
-  currentKeys.forEach(key => {
-    if(!prevTableKeys.has(key)) {
-      const tid = key.split(':')[0];
-      toast(`🆕 Masa ${tid} — Yeni sipariş!`, 'warn');
+  // Yeni sipariş bildirimi
+  var currentKeys = new Set(activeTables.map(function(t) { return t.id + ':' + (t.order_time || ''); }));
+  currentKeys.forEach(function(key) {
+    if (!prevTableKeys.has(key)) {
+      var tid = key.split(':')[0];
+      toast('🆕 Masa ' + tid + ' — Yeni sipariş!', 'warn');
       playBeep(660, 0.4);
     }
   });
   prevTableKeys = currentKeys;
 
-  // Grid
-  const grid = document.getElementById('orders-grid');
-  if(!activeTables.length) {
-    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">
-      <div style="font-size:56px;margin-bottom:12px;">✅</div>
-      <div class="syne" style="font-size:20px;font-weight:800;margin-bottom:6px;">Tüm Siparişler Tamamlandı!</div>
-      <div style="font-size:13px;">Bekleyen sipariş yok.</div></div>`;
+  // Orders grid
+  var grid = document.getElementById('orders-grid');
+
+  if (activeTables.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">'
+      + '<div style="font-size:56px;margin-bottom:12px;">✅</div>'
+      + '<div class="syne" style="font-size:20px;font-weight:800;margin-bottom:6px;">Tüm Siparişler Tamamlandı!</div>'
+      + '<div style="font-size:13px;">Bekleyen sipariş yok.</div></div>';
     return;
   }
-  const sorted = [...activeTables].sort((a,b)=>(b.order_time||0)-(a.order_time||0)===0?0:(b.order_time||0)-(a.order_time||0));
-  // Only re-render changed cards to avoid flicker
-  const existingIds = new Set([...grid.querySelectorAll('[data-table-id]')].map(el=>parseInt(el.dataset.tableId)));
-  const activeIds = new Set(sorted.map(t=>t.id));
-  // Remove gone
-  existingIds.forEach(id=>{ if(!activeIds.has(id)){ const el=grid.querySelector(`[data-table-id="${id}"]`); if(el)el.remove(); }});
-  // Update or add
-  sorted.forEach((table,i)=>{
-    const elapsed = table.order_time ? Math.floor((now-table.order_time)/60000) : 0;
-    const isCrit = elapsed >= 15;
-    const orders = Object.values(table.orders||{});
-    const totalPrep = orders.reduce((s,o)=>{const m=menuById(o.id);return s+(m?m.prep:0);},0);
-    const prog = Math.min(100, totalPrep>0?Math.round((elapsed/totalPrep)*100):0);
-    const total = tableTotal(table);
-    const html = `<div class="order-card ${isCrit?'critical-alarm':''}" data-table-id="${table.id}">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="syne" style="font-size:20px;font-weight:800;color:${isCrit?'#ff8080':'var(--gold)'};">Masa ${table.id}</span>
-          <span class="badge ${isCrit?'b-red':'b-blue'}">${elapsed}dk</span>
-          ${table.waiter_call?`<span class="badge b-red"><i class="fas fa-bell fa-beat"></i> Çağrı</span>`:''}
-        </div>
-        <button class="btn btn-green btn-sm" onclick="completeOrder(${table.id})"><i class="fas fa-check"></i> Hazır</button>
-      </div>
-      <div class="prog-bar"><div class="prog-fill ${isCrit?'crit':''}" style="width:${prog}%;"></div></div>
-      ${isCrit?`<div style="padding:6px 10px;border-radius:8px;background:rgba(255,75,75,0.1);border:1px solid rgba(255,75,75,0.25);font-size:11px;font-weight:700;color:#ff8080;text-align:center;">⚠️ KRİTİK GECİKME — ${elapsed} dakika!</div>`:''}
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${orders.map(o=>{const m=menuById(o.id);if(!m)return'';return`
-        <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);">
-          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:11px;background:rgba(240,192,96,0.15);color:var(--gold);border:1px solid rgba(240,192,96,0.2);padding:2px 7px;border-radius:6px;">${o.qty}×</span>
-          <span style="font-size:13px;flex:1;">${m.name}</span>
-          <span style="font-size:10px;color:var(--muted);">${m.prep}dk</span>
-          ${m.hot?'<span>🌶️</span>':''}${m.vegan?'<span>🌿</span>':''}
-        </div>`;}).join('')}
-      </div>
-      ${table.note?`<div style="padding:8px 10px;border-radius:8px;background:rgba(240,192,96,0.05);border:1px solid rgba(240,192,96,0.12);font-size:11px;color:var(--muted);"><i class="fas fa-sticky-note" style="color:var(--gold);margin-right:4px;"></i>${table.note}</div>`:''}
-      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px;border-top:1px solid var(--border);">
-        <span style="font-size:11px;color:var(--muted);">${orders.reduce((s,o)=>s+o.qty,0)} kalem</span>
-        <span class="syne" style="font-weight:800;color:var(--gold);">${total}₺</span>
-      </div>
-    </div>`;
-    const existing = grid.querySelector(`[data-table-id="${table.id}"]`);
-    if(existing) { existing.outerHTML = html; }
-    else { grid.insertAdjacentHTML('beforeend', html); }
+
+  // En eski sipariş önce gelsin
+  var sorted = activeTables.slice().sort(function(a, b) {
+    return (a.order_time || 0) - (b.order_time || 0);
+  });
+
+  // Silinmiş masaların kartını kaldır
+  var existingEls = grid.querySelectorAll('[data-table-id]');
+  var activeIds = new Set(sorted.map(function(t) { return t.id; }));
+  existingEls.forEach(function(el) {
+    if (!activeIds.has(parseInt(el.dataset.tableId))) el.remove();
+  });
+
+  sorted.forEach(function(table) {
+    var elapsed = table.order_time ? Math.floor((now - table.order_time) / 60000) : 0;
+    var isCrit = elapsed >= 15;
+    var orders = Object.values(table.orders || {});
+    var totalPrep = orders.reduce(function(s, o) {
+      var m = menuById(o.id);
+      return s + (m ? m.prep : 10);
+    }, 0);
+    var prog = totalPrep > 0 ? Math.min(100, Math.round((elapsed / totalPrep) * 100)) : 0;
+    var total = tableTotal(table);
+
+    // Sipariş satırları
+    var orderRows = '';
+    orders.forEach(function(o) {
+      var m = safeMenuById(o.id);
+      orderRows += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);">'
+        + '<span style="font-family:Syne,sans-serif;font-weight:800;font-size:11px;background:rgba(240,192,96,0.15);color:var(--gold);border:1px solid rgba(240,192,96,0.2);padding:2px 7px;border-radius:6px;">' + (o.qty || 1) + '×</span>'
+        + '<span style="font-size:13px;flex:1;">' + m.name + '</span>'
+        + '<span style="font-size:10px;color:var(--muted);">' + m.prep + 'dk</span>'
+        + (m.hot ? '<span>🌶️</span>' : '')
+        + (m.vegan ? '<span>🌿</span>' : '')
+        + '</div>';
+    });
+
+    var html = '<div class="order-card ' + (isCrit ? 'critical-alarm' : '') + '" data-table-id="' + table.id + '">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;">'
+        + '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<span class="syne" style="font-size:20px;font-weight:800;color:' + (isCrit ? '#ff8080' : 'var(--gold)') + ';">Masa ' + table.id + '</span>'
+          + '<span class="badge ' + (isCrit ? 'b-red' : 'b-blue') + '">' + elapsed + 'dk</span>'
+          + (table.waiter_call ? '<span class="badge b-red"><i class="fas fa-bell fa-beat"></i> Çağrı</span>' : '')
+        + '</div>'
+        + '<button class="btn btn-green btn-sm" onclick="completeOrder(' + table.id + ')"><i class="fas fa-check"></i> Hazır</button>'
+      + '</div>'
+      + '<div class="prog-bar"><div class="prog-fill ' + (isCrit ? 'crit' : '') + '" style="width:' + prog + '%;"></div></div>'
+      + (isCrit ? '<div style="padding:6px 10px;border-radius:8px;background:rgba(255,75,75,0.1);border:1px solid rgba(255,75,75,0.25);font-size:11px;font-weight:700;color:#ff8080;text-align:center;">⚠️ KRİTİK GECİKME — ' + elapsed + ' dakika!</div>' : '')
+      + '<div style="display:flex;flex-direction:column;gap:6px;">' + orderRows + '</div>'
+      + (table.note ? '<div style="padding:8px 10px;border-radius:8px;background:rgba(240,192,96,0.05);border:1px solid rgba(240,192,96,0.12);font-size:11px;color:var(--muted);"><i class="fas fa-sticky-note" style="color:var(--gold);margin-right:4px;"></i>' + table.note + '</div>' : '')
+      + '<div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px;border-top:1px solid var(--border);">'
+        + '<span style="font-size:11px;color:var(--muted);">' + orders.reduce(function(s,o){return s+(o.qty||1);},0) + ' kalem</span>'
+        + '<span class="syne" style="font-weight:800;color:var(--gold);">' + total + '₺</span>'
+      + '</div>'
+      + '</div>';
+
+    var existing = grid.querySelector('[data-table-id="' + table.id + '"]');
+    if (existing) {
+      existing.outerHTML = html;
+    } else {
+      grid.insertAdjacentHTML('beforeend', html);
+    }
   });
 }
 
-async function completeOrder(tableId) {
-  try {
-    await FDB.completeOrder(tableId);
+function completeOrder(tableId) {
+  FDB.completeOrder(tableId).then(function() {
     playBeep(880, 0.6);
-    toast(`✅ Masa ${tableId} tamamlandı!`, 'success');
-  } catch(e) { toast('Hata: '+e.message,'critical'); }
+    toast('✅ Masa ' + tableId + ' tamamlandı!', 'success');
+  }).catch(function(e) {
+    toast('Hata: ' + e.message, 'critical');
+  });
 }
 
-async function clearWaiterCall(tableId) {
-  await FDB.updateTable(tableId, { waiter_call: false, waiter_call_time: null });
-  toast(`Masa ${tableId} çağrısı kapatıldı`, 'success');
+function clearWaiterCall(tableId) {
+  FDB.updateTable(tableId, { waiter_call: false, waiter_call_time: null }).then(function() {
+    toast('Masa ' + tableId + ' çağrısı kapatıldı', 'success');
+  });
 }
 
 function timeSince(ts) {
-  const min = Math.floor((Date.now()-ts)/60000);
-  return min < 1 ? 'az önce' : `${min}dk önce`;
+  var min = Math.floor((Date.now() - ts) / 60000);
+  return min < 1 ? 'az önce' : min + 'dk önce';
 }
 </script>
 </body>
